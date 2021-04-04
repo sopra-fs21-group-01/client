@@ -84,22 +84,25 @@ class Login extends React.Component {
    * If the request is successful, a new user is returned to the front-end
    * and its token is stored in the localStorage.
    */
-  async login() {
+  async createlobby() {
     try {
       const requestBody = JSON.stringify({
-        username: this.state.username,
-        name: this.state.name
+        password: this.state.password,
+        name: this.state.lobbyname,
+        host: this.state.host,
       });
-      const response = await api.post('/users', requestBody);
+      const response = await api.post('/lobby', requestBody);
 
-      // Get the returned user and update a new object.
-      const user = new User(response.data);
 
-      // Store the token into the local storage.
-      localStorage.setItem('token', user.token);
+      const lobbyId = response.data
+
+
+      localStorage.setItem("address", lobbyId);
+
+
 
       // Login successfully worked --> navigate to the route /game in the GameRouter
-      this.props.history.push(`/game`);
+      this.props.history.push(`/lobby`);
     } catch (error) {
       alert(`Something went wrong during the login: \n${handleError(error)}`);
     }
@@ -130,31 +133,48 @@ class Login extends React.Component {
       <BaseContainer>
         <FormContainer>
           <Form>
-            <Label>Username</Label>
+            <Label>lobbyname</Label>
             <InputField
               placeholder="Enter here.."
               onChange={e => {
-                this.handleInputChange('username', e.target.value);
+                this.handleInputChange('lobbyname', e.target.value);
               }}
             />
-            <Label>Name</Label>
+           <Label>Password</Label>
             <InputField
               placeholder="Enter here.."
               onChange={e => {
-                this.handleInputChange('name', e.target.value);
+                this.handleInputChange('password', e.target.value);
               }}
             />
+            <Label>host</Label>
+             <InputField
+               placeholder="Enter here.."
+               onChange={e => {
+                 this.handleInputChange('host', e.target.value);
+               }}
+             />
             <ButtonContainer>
               <Button
-                disabled={!this.state.username || !this.state.name}
+
                 width="50%"
                 onClick={() => {
-                  this.login();
+                  this.createlobby();
                 }}
               >
-                Login
+                Createlobby
               </Button>
             </ButtonContainer>
+             <ButtonContainer>
+                          <Button
+                            width="50%"
+                            onClick={() => {
+                              this.props.history.push(`/register`);
+                            }}
+                          >
+                            No profil yet? Register!
+                          </Button>
+                        </ButtonContainer>
           </Form>
         </FormContainer>
       </BaseContainer>

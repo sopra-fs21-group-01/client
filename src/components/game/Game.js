@@ -76,6 +76,14 @@ class Game extends React.Component {
                 return (
                   <PlayerContainer key={user.id}>
                     <Player user={user} />
+                     <Button
+                     width= "100%"
+                     onClick={()=> {
+                     localStorage.setItem('username', user.username);
+                     this.props.history.push('/lobby');}}>
+                    Create Lobby
+                   </Button>
+                   <span>&nbsp;&nbsp;</span>
                   </PlayerContainer>
                 );
               })}
