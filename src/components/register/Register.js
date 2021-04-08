@@ -8,7 +8,6 @@ import { Button } from '../../views/design/Button';
 import { Button2 } from '../../views/design/Button2';
 import { Link } from "react-router-dom";
 
-
 const FormContainer = styled.div`
   margin-top: 2em;
   display: flex;
@@ -69,6 +68,7 @@ const TitelContainer = styled.div`
 `;
 
 
+
 /**
  * Classes in React allow you to have an internal state within the class and to have the React life-cycle for your component.
  * You should have a class (instead of a functional component) when:
@@ -78,9 +78,9 @@ const TitelContainer = styled.div`
  * https://reactjs.org/docs/react-component.html
  * @Class
  */
-class Login extends React.Component {
+class Register extends React.Component {
   /**
-   * If you don’t initialize the state and you don’t bind methods, you don’t need to implement a constructor for your React component.
+   * If you donâ€™t initialize the state and you donâ€™t bind methods, you donâ€™t need to implement a constructor for your React component.
    * The constructor for a React component is called before it is mounted (rendered).
    * In this case the initial state is defined in the constructor. The state is a JS object containing two fields: name and username
    * These fields are then handled in the onChange() methods in the resp. InputFields
@@ -88,33 +88,34 @@ class Login extends React.Component {
   constructor() {
     super();
     this.state = {
-      name: null,
-      username: null
-    };
+      username: null,
+      email: null,
+      password: null
+    }
   }
   /**
    * HTTP POST request is sent to the backend.
    * If the request is successful, a new user is returned to the front-end
    * and its token is stored in the localStorage.
    */
-  async login() {
+  async register() {
     try {
       const requestBody = JSON.stringify({
         username: this.state.username,
+        email: this.state.email,
         password: this.state.password
+
       });
-      const response = await api.post('/login', requestBody);
+      const response = await api.post('/users', requestBody);
 
       // Get the returned user and update a new object.
       const user = new User(response.data);
-
-      // Store the token into the local storage.
-      localStorage.setItem('token', user.token);
-
-      // Login successfully worked --> navigate to the route /game in the GameRouter
-      this.props.history.push(`/game`);
+      
+      alert("successfully registered!")
+      this.props.history.push(`/login`);
+    
     } catch (error) {
-      alert(`Something went wrong during the login: \n${handleError(error)}`);
+      alert(`Something went wrong during the registration: \n${handleError(error)}`);
     }
   }
 
@@ -143,13 +144,19 @@ class Login extends React.Component {
       <BaseContainer>
         <FormContainer>
           <TitelContainer>
-            <h1>Login</h1>
+            <h1>Register</h1>
           </TitelContainer>
           <Form>
             <Label>Username</Label>
             <InputField
               onChange={e => {
                 this.handleInputChange('username', e.target.value);
+              }}
+            />
+            <Label>Email</Label>
+            <InputField
+              onChange={e => {
+                this.handleInputChange('email', e.target.value);
               }}
             />
             <Label>Password</Label>
@@ -164,17 +171,17 @@ class Login extends React.Component {
                 disabled={!this.state.username || !this.state.password}
                 width="60%"
                 onClick={() => {
-                  this.login();
+                  this.register();
                 }}
               >
-                Login
+                Register
               </Button>
             </ButtonContainer>
             <ButtonContainer2>
-              <Link to="/register"><Button2
+              <Link to="/login"><Button2
               width="100%"
               >
-                No account? Register Here
+                Already got an account? Login Here
               </Button2>
               </Link>
             </ButtonContainer2>
@@ -189,4 +196,4 @@ class Login extends React.Component {
  * You can get access to the history object's properties via the withRouter.
  * withRouter will pass updated match, location, and history props to the wrapped component whenever it renders.
  */
-export default withRouter(Login);
+export default withRouter(Register);
