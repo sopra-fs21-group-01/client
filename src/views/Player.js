@@ -34,6 +34,7 @@ const Player = ({ user }) => {
   return (
     <Container>
       <UserName>{user.username}</UserName>
+      <PassWord>{user.password}</PassWord>
       <Id>Id: {user.id}</Id>
     </Container>
   );
