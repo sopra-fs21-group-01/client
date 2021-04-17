@@ -76,6 +76,8 @@ class Mainmenu extends React.Component {
 
   async create() {
 
+    try {
+
         // get the host name of the user that creates the lobby
 
         const requestBody = JSON.stringify({
@@ -87,7 +89,11 @@ class Mainmenu extends React.Component {
         const path_ending = path.split("/")[1];
         localStorage.setItem('lobbyID', path_ending);
 
-    this.props.history.push('/game/lobby');
+        this.props.history.push('/game/lobby');
+
+    } catch (error) {
+          alert(`Something went wrong during lobby creation: \n${handleError(error)}`);
+        }
   }
 
   profile() {

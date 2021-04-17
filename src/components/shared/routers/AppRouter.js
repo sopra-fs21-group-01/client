@@ -5,6 +5,7 @@ import GameRouter from "./GameRouter";
 import { LoginGuard } from "../routeProtectors/LoginGuard";
 import Login from "../../login/Login";
 import Register from "../../register/Register";
+import Lobby from "../../game/Lobby";
 
 
 /**
@@ -28,6 +29,12 @@ class AppRouter extends React.Component {
                 <GameGuard>
                   <GameRouter base={"/game"} />
                 </GameGuard>
+              )}
+            />
+            <Route
+              path="/game/lobby"
+              render={() => (
+                <Lobby />
               )}
             />
             <Route

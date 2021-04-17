@@ -16,6 +16,11 @@ const UserName = styled.div`
   margin-left: 5px;
 `;
 
+const PassWord = styled.div`
+  font-weight: lighter;
+  margin-left: 5px;
+`;
+
 const Id = styled.div`
   margin-left: auto;
   margin-right: 10px;
