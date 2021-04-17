@@ -74,7 +74,19 @@ class Mainmenu extends React.Component {
     this.props.history.push('/game/join');
   }
 
-  create() {
+  async create() {
+
+        // get the host name of the user that creates the lobby
+
+        const requestBody = JSON.stringify({
+          host: localStorage.getItem('username'),
+          });
+        const response = await api.post('/lobbies', requestBody);
+
+        const path = response.data;
+        const path_ending = path.split("/")[1];
+        localStorage.setItem('lobbyID', path_ending);
+
     this.props.history.push('/game/lobby');
   }
 

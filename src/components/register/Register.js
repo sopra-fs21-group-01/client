@@ -110,6 +110,10 @@ class Register extends React.Component {
 
       // Get the returned user and update a new object.
       const user = new User(response.data);
+
+      // username posted to localstorage for later use in Lobby creation
+      localStorage.setItem('username', user.username);
+
       
       alert("successfully registered!")
       this.props.history.push(`/login`);
