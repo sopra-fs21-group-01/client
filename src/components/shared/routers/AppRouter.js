@@ -6,6 +6,7 @@ import { LoginGuard } from "../routeProtectors/LoginGuard";
 import Login from "../../login/Login";
 import Register from "../../register/Register";
 import Lobby from "../../game/Lobby";
+import LobbyJoinSelection from "../../game/LobbyJoinSelection";
 
 
 /**
@@ -35,6 +36,12 @@ class AppRouter extends React.Component {
               path="/game/lobby"
               render={() => (
                 <Lobby />
+              )}
+            />
+            <Route
+              path="/lobbyJoinSelection"
+              render={() => (
+                <LobbyJoinSelection/>
               )}
             />
             <Route

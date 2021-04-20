@@ -38,7 +38,11 @@ const ButtonContainer = styled.div`
 
 class Lobby extends React.Component {
    
-  return() {
+  async closeLobby() {
+  try {await api.delete("/lobbies/"+localStorage.getItem('lobbyID'))}
+  catch (error) {
+            alert(`Something went wrong during lobby deleting: \n${handleError(error)}`);
+          }
     this.props.history.push('/game');
     }
 
@@ -92,7 +96,7 @@ class Lobby extends React.Component {
             <Button2
               width="80%"
               onClick={() => {
-                this.return();
+                this.closeLobby();
               }}
             >
               Close Lobby

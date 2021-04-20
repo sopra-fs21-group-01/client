@@ -71,7 +71,7 @@ class Mainmenu extends React.Component {
   }
 
   join() {
-    this.props.history.push('/game/join');
+    this.props.history.push('/lobbyJoinSelection');
   }
 
   async create() {
