@@ -7,6 +7,7 @@ import Login from "../../login/Login";
 import Register from "../../register/Register";
 import Lobby from "../../game/Lobby";
 import LobbyJoinSelection from "../../game/LobbyJoinSelection";
+import WaitingRoom from "../../game/WaitingRoom";
 
 
 /**
@@ -42,6 +43,12 @@ class AppRouter extends React.Component {
               path="/lobbyJoinSelection"
               render={() => (
                 <LobbyJoinSelection/>
+              )}
+            />
+            <Route
+              path="/game/waitingRoom"
+              render={() => (
+                <WaitingRoom />
               )}
             />
             <Route

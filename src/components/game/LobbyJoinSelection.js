@@ -68,7 +68,7 @@ class LobbyJoinSelection extends React.Component {
           });
         await api.put('/lobbies/'+id+'/joinedLobbies', requestBody);
 
-        this.props.history.push('/lobbies/'+id);
+        this.props.history.push('/game/waitingRoom');
 
     } catch (error) {
           alert(`Something went wrong during lobby joining: \n${handleError(error)}`);
