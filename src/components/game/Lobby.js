@@ -37,20 +37,34 @@ const ButtonContainer = styled.div`
 `;
 
 class Lobby extends React.Component {
+    constructor() {
+        super();
+        this.state = {
+            id: localStorage.getItem('LobbyID')
+        };
+    }
    
-  async closeLobby() {
-  try {await api.delete("/lobbies/"+localStorage.getItem('lobbyID'))}
-  catch (error) {
+    async closeLobby() {
+    try {await api.delete("/lobbies/"+id)}
+    catch (error) {
             alert(`Something went wrong during lobby deleting: \n${handleError(error)}`);
           }
     this.props.history.push('/game');
     }
 
-  invite() {
+    invite() {
     // Create invitation code
     }
 
-  render() {
+    async startGame(){
+      try{await api.post("/game/"+id)
+          this.props.history.push('/game'+id)
+      }catch{
+          alert(`Something went wrong during the creation of the game: \n${handleError(error)}`);
+      }
+    }
+
+    render() {
     return (
     <Container2>
       <Container>
@@ -86,7 +100,7 @@ class Lobby extends React.Component {
               <Button3
               width="100%"
               onClick={() => {
-                this.create();
+                this.startGame();
               }}
               >
               Start Game
@@ -102,11 +116,11 @@ class Lobby extends React.Component {
               Close Lobby
             </Button2>
           </div>
-        
+
         </Container>
       </Container2>
     )
-  }
+    }
 }
 
 export default withRouter(Lobby);

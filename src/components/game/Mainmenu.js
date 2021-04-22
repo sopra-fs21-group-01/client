@@ -56,7 +56,7 @@ class Mainmenu extends React.Component {
 
       localStorage.removeItem('token');
       
-      console.log(this.props)
+      console.log(this.props) // TODO für was sind diese beiden console.log?
       console.log(this.props.history)
       
       this.props.history.push('/login');
