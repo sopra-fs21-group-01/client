@@ -56,7 +56,7 @@ class Mainmenu extends React.Component {
 
       localStorage.removeItem('token');
       
-      console.log(this.props)
+      console.log(this.props) // TODO für was sind diese beiden console.log?
       console.log(this.props.history)
       
       this.props.history.push('/login');
@@ -66,6 +66,7 @@ class Mainmenu extends React.Component {
     // if there's still a token in localstorage after terminating the server before login out
     finally {
       localStorage.removeItem('token');
+      localStorage.removeItem('id');
       this.props.history.push('/login');
     }
   }
@@ -96,8 +97,8 @@ class Mainmenu extends React.Component {
         }
   }
 
-  profile() {
-    this.props.history.push('/game/profile');
+  profile = (id) => {
+      this.props.history.push(`/game/profile/${id}`);
   }
 
   render() {
@@ -136,7 +137,7 @@ class Mainmenu extends React.Component {
               <Button
               width="100%"
               onClick={() => {
-                this.profile();
+                this.profile(localStorage.getItem('id'));
               }}
               >
               Profile

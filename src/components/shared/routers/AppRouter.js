@@ -9,6 +9,10 @@ import Lobby from "../../game/Lobby";
 import LobbyJoinSelection from "../../game/LobbyJoinSelection";
 import WaitingRoom from "../../game/WaitingRoom";
 
+import { ProfileGuard } from "../routeProtectors/ProfileGuard";
+import Profile from "../../game/Profile";
+import Edit from "../../game/Edit";
+import { EditGuard } from "../routeProtectors/EditGuard";
 
 /**
  * Main router of your application.
@@ -33,6 +37,23 @@ class AppRouter extends React.Component {
                 </GameGuard>
               )}
             />
+            <Route
+              path="/game/profile/:id"
+              render={() => (
+                <ProfileGuard>
+                  <Profile />
+                </ProfileGuard>
+              )}
+            />
+            <Route
+              exact
+              path="/game/edit/:id"
+              render={() => (
+                <EditGuard>
+                  <Edit />
+                </EditGuard>
+              )}
+            />                        
             <Route
               path="/game/lobby"
               render={() => (
