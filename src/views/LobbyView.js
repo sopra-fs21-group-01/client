@@ -35,7 +35,7 @@ const Id = styled.div`
  * https://reactjs.org/docs/components-and-props.html
  * @FunctionalComponent
  */
-const Lobby = ({ lobby }) => {
+const LobbyView = ({ lobby }) => {
   return (
     <Container>
       <Id>Id: {lobby.id}</Id>
@@ -43,4 +43,4 @@ const Lobby = ({ lobby }) => {
   );
 };
 
-export default Lobby;
+export default LobbyView;

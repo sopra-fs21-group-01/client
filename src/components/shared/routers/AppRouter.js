@@ -11,6 +11,7 @@ import WaitingRoom from "../../game/WaitingRoom";
 
 import { ProfileGuard } from "../routeProtectors/ProfileGuard";
 import Profile from "../../game/Profile";
+import Game from "../../game/Game";
 import Edit from "../../game/Edit";
 import { EditGuard } from "../routeProtectors/EditGuard";
 
@@ -78,6 +79,15 @@ class AppRouter extends React.Component {
               render={() => (
                 <LoginGuard>
                   <Login />
+                </LoginGuard>
+              )}
+            />
+            <Route
+              path="/game/running"
+              exact
+              render={() => (
+                <LoginGuard>
+                  <Game />
                 </LoginGuard>
               )}
             />

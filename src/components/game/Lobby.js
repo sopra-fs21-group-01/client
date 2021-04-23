@@ -45,7 +45,7 @@ class Lobby extends React.Component {
     }
    
     async closeLobby() {
-    try {await api.delete("/lobbies/"+id)}
+    try {await api.delete("/lobbies/"+this.state.id)}
     catch (error) {
             alert(`Something went wrong during lobby deleting: \n${handleError(error)}`);
           }
@@ -57,9 +57,9 @@ class Lobby extends React.Component {
     }
 
     async startGame(){
-      try{await api.post("/game/"+id)
-          this.props.history.push('/game'+id)
-      }catch{
+      try{await api.post("/game/"+this.state.id)
+          this.props.history.push('/game'+this.state.id)
+      }catch (error){
           alert(`Something went wrong during the creation of the game: \n${handleError(error)}`);
       }
     }

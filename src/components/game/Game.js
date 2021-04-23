@@ -9,7 +9,7 @@ import { Button2 } from '../../views/design/Button2';
 import { Link } from "react-router-dom";
 
 class Game extends React.Component{
-    players;
+    /** players;
     constructor() {
         super();
         this.state = {
@@ -52,4 +52,7 @@ class Game extends React.Component{
         });
         const response = await api.put("/game/"+id+"playerTurn", requestBody);
     }
+    */
 }
+
+export default withRouter(Game)

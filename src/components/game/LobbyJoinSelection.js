@@ -6,7 +6,9 @@ import { Button } from '../../views/design/Button';
 import { Button2 } from '../../views/design/Button2';
 import { withRouter } from 'react-router-dom';
 import { Spinner } from '../../views/design/Spinner';
-import Lobby from '../../views/Lobby';
+import LobbyView from '../../views/LobbyView';
+import Lobby from '../shared/models/Lobby';
+
 
 const Container = styled(BaseContainer)`
   color: black;
@@ -64,7 +66,7 @@ class LobbyJoinSelection extends React.Component {
         // get the host name of the user that creates the lobby
 
         const requestBody = JSON.stringify({
-          userName: localStorage.getItem('username'),
+          playerName: localStorage.getItem('username'),
           });
         await api.put('/lobbies/'+id+'/joinedLobbies', requestBody);
 
@@ -79,6 +81,8 @@ class LobbyJoinSelection extends React.Component {
   async componentDidMount() {
     try {
       const response = await api.get('/lobbies');
+
+      const lobby = new Lobby(response.data);
 
       // Get the returned users and update the state.
       this.setState({ lobbies: response.data });
@@ -105,11 +109,11 @@ class LobbyJoinSelection extends React.Component {
               {this.state.lobbies.map(lobby => {
                 return (
                   <LobbyContainer key={lobby.id}>
-                    <Lobby lobby={lobby} />
+                    <LobbyView lobby={lobby} />
                      <Button
                      width= "100%"
                      onClick={()=> {
-                     // localStorage.setItem('ID', lobby.id);
+                     localStorage.setItem('lobbyId', lobby.id);
                      this.join(lobby.id)}}>
                     Join Lobby
                    </Button>

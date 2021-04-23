@@ -114,6 +114,9 @@ class Register extends React.Component {
       // username posted to localstorage for later use in Lobby creation
       localStorage.setItem('username', user.username);
 
+      // localStorage.setItem('id', user.id);
+
+
       
       alert("successfully registered!")
       this.props.history.push(`/login`);
