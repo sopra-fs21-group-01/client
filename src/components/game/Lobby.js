@@ -40,12 +40,17 @@ class Lobby extends React.Component {
     constructor() {
         super();
         this.state = {
-            id: localStorage.getItem('LobbyID')
+            id: localStorage.getItem('lobbyId'),
+            host: localStorage.getItem('username'),
         };
     }
-   
+
+
+
     async closeLobby() {
-    try {await api.delete("/lobbies/"+this.state.id)}
+    try {
+    const lobbyId = localStorage.getItem('lobbyId');
+    await api.delete("/lobbies/"+lobbyId)}
     catch (error) {
             alert(`Something went wrong during lobby deleting: \n${handleError(error)}`);
           }
@@ -57,8 +62,15 @@ class Lobby extends React.Component {
     }
 
     async startGame(){
-      try{await api.post("/game/"+this.state.id)
-          this.props.history.push('/game'+this.state.id)
+      try{
+       const requestBody = JSON.stringify({
+              id: localStorage.getItem('lobbyId'),
+              host: localStorage.getItem('username'),
+               });
+
+      const lobbyId = localStorage.getItem('lobbyId');
+      await api.post("/game/"+lobbyId+"/kickOff", requestBody)
+          this.props.history.push('/game/running')
       }catch (error){
           alert(`Something went wrong during the creation of the game: \n${handleError(error)}`);
       }

@@ -88,7 +88,7 @@ class Mainmenu extends React.Component {
 
         const path = response.data;
         const path_ending = path.split("/")[1];
-        localStorage.setItem('lobbyID', path_ending);
+        localStorage.setItem('lobbyId', path_ending);
 
         this.props.history.push('/game/lobby');
 
