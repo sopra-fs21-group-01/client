@@ -9,6 +9,7 @@ import { withRouter } from 'react-router-dom';
 import Dropdown from 'react-bootstrap/Dropdown';
 import { Spinner } from '../../views/design/Spinner';
 import Lobby from '../shared/models/Lobby';
+import UnoTable from '../../views/Images/UnoTable.png';
 
 const Container2 = styled.div`
   display: flex;
@@ -45,12 +46,13 @@ class Game extends React.Component{
     return (
     <Container2>
       <Container>
-        <TitelContainer>
-          <h2>Waiting for Game to start</h2>
-             <Spinner />
-        </TitelContainer>
-          <div>
 
+        <TitelContainer>
+          <h2>Lets start the game</h2>
+        </TitelContainer>
+
+          <div style={{ backgroundImage: `url(${UnoTable}) `}}>
+          <img src={UnoTable} />
           </div>
 
         </Container>
