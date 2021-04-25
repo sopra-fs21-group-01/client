@@ -10,6 +10,7 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import { Spinner } from '../../views/design/Spinner';
 import Lobby from '../shared/models/Lobby';
 import UnoTable from '../../views/Images/UnoTable.png';
+import PlayerList from '../shared/models/PlayerList';
 
 const Container2 = styled.div`
   display: flex;
@@ -48,6 +49,22 @@ class Game extends React.Component{
         };
     }
 
+  async componentDidMount(){
+    try {
+        const lobbyId = localStorage.getItem('lobbyId');
+        const response = await api.get(`lobbies/${lobbyId}`);
+
+        // get opponents
+        const opponentList = new PlayerList(response.data);
+        var playerIndex = (opponentList.playerList).indexOf(localStorage.getItem('username'))
+        opponentList.playerList.splice(playerIndex, 1); // remove main player 
+        localStorage.setItem('opponentList', JSON.stringify(opponentList.playerList));
+
+    }  catch (error) {
+        alert(`Something went wrong while fetching the users: \n${handleError(error)}`);
+    }
+  }
+
     /** async componentDidMount(){
 
     const gameId = localStorage.getItem('lobbyId');
@@ -85,12 +102,12 @@ class Game extends React.Component{
           <h2>Lets start the game</h2>
         </TitelContainer>
 
-          <div style={{ backgroundImage: `url(${UnoTable}) `}}>
-          <img src={UnoTable} />
-          </div>
+        <div style={{ backgroundImage: `url(${UnoTable}) `}}>
+        <img src={UnoTable} />
+        </div>
 
-        </Container>
-      </Container2>
+      </Container>
+    </Container2>
     )
   }
 
