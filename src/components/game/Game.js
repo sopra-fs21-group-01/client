@@ -40,7 +40,41 @@ const ButtonContainer = styled.div`
 `;
 
 class Game extends React.Component{
+    constructor() {
+        super();
+        this.state = {
+            opponentList: null,
+            playerHand: null,
+        };
+    }
 
+    /** async componentDidMount(){
+
+    const gameId = localStorage.getItem('lobbyId');
+
+    // get players and starting hand
+    try {
+
+    const playerListResponse = await api.get("/game/"+gameId+"/kickOff");
+
+    this.setState({opponentList: playerListResponse.data})
+
+    }
+
+      // call every second
+      try { setInterval(async() => {
+
+
+
+          {
+
+          ;
+          }
+           }, 10000);}
+           catch (error) {
+                     alert(`Something went wrong when updating the game: \n${handleError(error)}`);
+                   }
+           } */
 
   render() {
     return (
