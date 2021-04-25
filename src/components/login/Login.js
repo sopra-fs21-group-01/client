@@ -113,7 +113,7 @@ class Login extends React.Component {
       // Store the token into the local storage.
       localStorage.setItem('token', user.token);
 
-      // localStorage.setItem('id', user.id);
+      localStorage.setItem('id', user.id);
 
       // username posted to localstorage for later use in Lobby creation
       localStorage.setItem('username', user.username);
