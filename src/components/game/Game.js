@@ -11,6 +11,19 @@ import { Spinner } from '../../views/design/Spinner';
 import Lobby from '../shared/models/Lobby';
 import UnoTable from '../../views/Images/UnoTable.png';
 import PlayerList from '../shared/models/PlayerList';
+import Player from '../../views/Player';
+
+const Users = styled.ul`
+  list-style: none;
+  padding-left: 0;
+`;
+
+const PlayerContainer = styled.li`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+`;
 
 const Container2 = styled.div`
   display: flex;
@@ -58,7 +71,9 @@ class Game extends React.Component{
         const opponentList = new PlayerList(response.data);
         var playerIndex = (opponentList.playerList).indexOf(localStorage.getItem('username'))
         opponentList.playerList.splice(playerIndex, 1); // remove main player 
+        this.setState({opponentList: JSON.stringify(opponentList.playerList)});
         localStorage.setItem('opponentList', JSON.stringify(opponentList.playerList));
+        
 
     }  catch (error) {
         alert(`Something went wrong while fetching the users: \n${handleError(error)}`);
@@ -105,6 +120,7 @@ class Game extends React.Component{
         <div style={{ backgroundImage: `url(${UnoTable}) `}}>
         <img src={UnoTable} />
         </div>
+
 
       </Container>
     </Container2>
