@@ -3,8 +3,8 @@ import styled from "styled-components";
 
 const Container = styled.div`
   margin: 6px 0;
-  width: 280px;
-  padding: 10px;
+  width: 580px;
+  padding: 0px;
   border-radius: 6px;
   display: flex;
   align-items: center;
@@ -23,8 +23,9 @@ const PassWord = styled.div`
 
 const Id = styled.div`
   margin-left: auto;
-  margin-right: 10px;
+  margin-right: auto;
   font-weight: bold;
+  width:500px;
 `;
 
 /**
@@ -38,7 +39,7 @@ const Id = styled.div`
 const LobbyView = ({ lobby }) => {
   return (
     <Container>
-      <Id>Id: {lobby.id}</Id>
+      <Id>{lobby.host}´s Lobby </Id>
     </Container>
   );
 };

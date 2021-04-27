@@ -4,12 +4,16 @@ import { BaseContainer } from '../../helpers/layout';
 import { api, handleError } from '../../helpers/api';
 import { Button } from '../../views/design/Button';
 import { Button2 } from '../../views/design/Button2';
+import { Button3 } from '../../views/design/Button3';
 import { withRouter } from 'react-router-dom';
 import { Spinner } from '../../views/design/Spinner';
 import LobbyView from '../../views/LobbyView';
 import Lobby from '../shared/models/Lobby';
 
-
+const Container2 = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
 const Container = styled(BaseContainer)`
   color: black;
   text-align: center;
@@ -110,26 +114,30 @@ class LobbyJoinSelection extends React.Component {
                 return (
                   <LobbyContainer key={lobby.id}>
                     <LobbyView lobby={lobby} />
-                     <Button
-                     width= "100%"
+                    <ButtonContainer>
+                     <Button3
+                     width="100%"
                      onClick={()=> {
                      localStorage.setItem('lobbyId', lobby.id);
                      this.join(lobby.id)}}>
                     Join Lobby
-                   </Button>
+                   </Button3>
+                   </ButtonContainer>
                    <span>&nbsp;&nbsp;</span>
                   </LobbyContainer>
                 );
               })}
             </Lobbies>
+            <ButtonContainer>
             <Button
-              width="100%"
+              width="20%"
               onClick={() => {
              this.props.history.push('/game')
               }}
             >
               Back
             </Button>
+            </ButtonContainer>
           </div>)}
       </Container>
     )
