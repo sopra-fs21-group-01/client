@@ -9,6 +9,7 @@ import { withRouter } from 'react-router-dom';
 import Dropdown from 'react-bootstrap/Dropdown';
 import { Spinner } from '../../views/design/Spinner';
 import Lobby from '../shared/models/Lobby';
+import PlayerList from '../shared/models/PlayerList';
 
 const Container2 = styled.div`
   display: flex;
@@ -42,7 +43,8 @@ class WaitingRoom extends React.Component {
   constructor() {
     super();
     this.state = {
-      gameID: null
+      gameID: null,
+      playerList:[]
     };
   }
 
@@ -54,6 +56,8 @@ class WaitingRoom extends React.Component {
      try {
         const id = localStorage.getItem("lobbyId")
              const response = await api.get('/lobbies/'+id);
+             const opponentList = new PlayerList(response.data);
+             this.setState({playerList: JSON.stringify(opponentList.playerList)});
 
              if (response.data.inGame == true)
              {
@@ -78,10 +82,11 @@ class WaitingRoom extends React.Component {
           <h2>Waiting for Game to start</h2>
              <Spinner />
         </TitelContainer>
+        <ButtonContainer>
+        </ButtonContainer>
           <div>
-
+            { this.state.playerList}
           </div>
-
         </Container>
       </Container2>
     )
