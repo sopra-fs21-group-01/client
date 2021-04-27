@@ -4,7 +4,7 @@ class Lobby {
         this.id = null;
         this.playerList = null;
         this.gamemode = null;
-        this.isInGame = null;
+        this.inGame = null;
         Object.assign(this, data);
     }
 }
