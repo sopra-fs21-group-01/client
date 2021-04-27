@@ -12,6 +12,9 @@ import Lobby from '../shared/models/Lobby';
 import UnoTable from '../../views/Images/UnoTable.png';
 import PlayerList from '../shared/models/PlayerList';
 import Player from '../../views/Player';
+import Hand from '../shared/models/Hand';
+import GameEntity from '../shared/models/GameEntity';
+import blue4 from '../../views/Images/CardDesigns/standard/blue/4.png';
 
 const Users = styled.ul`
   list-style: none;
@@ -59,8 +62,15 @@ class Game extends React.Component{
         this.state = {
             opponentList: null,
             playerHand: null,
+            id: localStorage.getItem("LobbyID"),
+            gamemode: null,
+            host: null,
+            cardStack: null,
+            
+            // TODO eventuell noch gamedirection für frontend per getrequest holen
         };
     }
+
 
   async componentDidMount(){
     try {
@@ -74,6 +84,8 @@ class Game extends React.Component{
         this.setState({opponentList: JSON.stringify(opponentList.playerList)});
         localStorage.setItem('opponentList', JSON.stringify(opponentList.playerList));
         
+        // get player's hand
+        this.getHand();
 
     }  catch (error) {
         alert(`Something went wrong while fetching the users: \n${handleError(error)}`);
@@ -108,56 +120,28 @@ class Game extends React.Component{
                    }
            } */
 
-  render() {
-    return (
-    <Container2>
-      <Container>
+  
 
-        <TitelContainer>
-          <h2>Lets start the game</h2>
-        </TitelContainer>
-
-        <div style={{ backgroundImage: `url(${UnoTable}) `}}>
-        <img src={UnoTable} />
-        </div>
-
-
-      </Container>
-    </Container2>
-    )
-  }
-
-    /** players;
-    constructor() {
-        super();
-        this.state = {
-            players: null,
-            id: localStorage.getItem("LobbyID"),
-            gamemode: null,
-            host: null,
-            cardStack: null,
-            // TODO eventuell noch gamedirection für frontend per getrequest holen
-
-        }
-    }
+    
+    
 
     async fetchData(){
         try{
-            const response = await api.get("game"+id);
+            const response = await api.get("game"+this.id);
             const game = new GameEntity(response.data);
             this.players = game.playerList;
             this.gamemode = game.gamemode;
             this.host = game.host;
             this.cardStack = game.cardStack;
 
-        }catch{error}{
+        }catch(error){
             alert(`Something went wrong during the fetch of the game information data: \n${handleError(error)}`);
         }
     }
 
     async deleteGame(){
         try{
-            await api.delete("game/"+id+"deletion")
+            await api.delete("game/"+this.id+"deletion")
         }catch(error){
             alert(`Something went wrong during the deletion of the game: \n${handleError(error)}`);
         }
@@ -168,9 +152,66 @@ class Game extends React.Component{
                 color: color,
                 value: value,
         });
-        const response = await api.put("/game/"+id+"playerTurn", requestBody);
+        const response = await api.put("/game/"+this.id+"/playerTurn", requestBody);
     }
-    */
+    async getHand(){
+      
+      const userid = localStorage.getItem('id')
+      const response = await api.get(`users/${userid}/hands`);
+      const hand = new Hand(response.data);
+      this.playerHand = hand.cards;
+      
+      var i;
+      var cardarray = [];
+      for (i = 0; i< (this.playerHand.length); i++) {
+          var str = this.playerHand[i].split('/');
+          var value = str[0];
+          var color = str[1];
+          cardarray.push([color,value]);
+          
+        
+   
+        }
+      for (let j = 0; j < cardarray.length ; j++){
+                color = cardarray[j][0];
+                switch(color) {
+                  case "Blue" :
+                    value = cardarray[j][1];
+                    switch(value) {
+                      case "1" :
+                         // show corresponding card
+                      case "2" :
+                        //  show corresponding card
+                      case "3" :
+                        // show corresponding card
+                      //usw
+                    }
+                }
+            }
+    
+    console.log(cardarray); 
+    }
+
+    render() {
+      return (
+      <Container2>
+        <Container>
+  
+          <TitelContainer>
+            <h2>Lets start the game</h2>
+          </TitelContainer>
+
+
+          <div style={{ backgroundImage: `url(${UnoTable}) `}}>
+          <img src={UnoTable} />
+          </div>
+
+        
+        </Container>
+      </Container2>
+      )
+    }
+    
 }
 
 export default withRouter(Game)
