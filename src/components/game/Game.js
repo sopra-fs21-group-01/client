@@ -15,8 +15,6 @@ import PlayerList from '../shared/models/PlayerList';
 import Player from '../../views/Player';
 import Hand from '../shared/models/Hand';
 import GameEntity from '../shared/models/GameEntity';
-import blue4 from '../../views/Images/CardDesigns/standard/blue/4.png';
-import CurrentPlayerEntity from "../shared/models/CurrentPlayerEntity";
 
 const Users = styled.ul`
   list-style: none;
@@ -82,7 +80,9 @@ class Game extends React.Component{
             cardStack: null,
             convertedHand: null,
             userid: null,
-            currentplayer: null
+            currentplayer: null,
+            currentcolor: null,
+            currentvalue: null,
 
             
             // TODO eventuell noch gamedirection für frontend per getrequest holen
@@ -92,25 +92,40 @@ class Game extends React.Component{
     }
     
 
-  async componentDidMount(){
-    try {
-        const response = await api.get(`lobbies/${this.id}`);
+      async componentDidMount(){
+        this.updateInterval = setInterval(()=> (this.checkStatus(), 5000));
+        try {
+            const response = await api.get(`lobbies/${this.id}`);
 
 
-        // get opponents
-        const opponentList = new PlayerList(response.data);
-        var playerIndex = (opponentList.playerList).indexOf(localStorage.getItem('username'))
-        opponentList.playerList.splice(playerIndex, 1); // remove main player 
-        this.setState({opponentList: JSON.stringify(opponentList.playerList)});
-        localStorage.setItem('opponentList', JSON.stringify(opponentList.playerList));
-        
-        // get player's hand
-        this.getHand();
-        this.currentPlayer();
-    }  catch (error) {
-        alert(`Something went wrong while fetching the users: \n${handleError(error)}`);
+            // get opponents
+            const opponentList = new PlayerList(response.data);
+            var playerIndex = (opponentList.playerList).indexOf(localStorage.getItem('username'))
+            opponentList.playerList.splice(playerIndex, 1); // remove main player
+            this.setState({opponentList: JSON.stringify(opponentList.playerList)});
+            localStorage.setItem('opponentList', JSON.stringify(opponentList.playerList));
+
+            // get player's hand
+            this.getHand();
+            this.fetchData();
+            console.log(this.currentvalue);
+            console.log(this.currentcolor);
+        }  catch (error) {
+            alert(`Something went wrong while fetching the users: \n${handleError(error)}`);
+        }
     }
-  }
+    async checkStatus(){
+        try {
+            this.getHand();
+            this.fetchData();
+        }
+        catch (error) {
+            alert(`Something went wrong when fetching currentplayer: \n${handleError(error)}`);
+        }
+    }
+    componentWillUnmount(){
+        clearInterval(this.updateInterval)
+    }
 
     /** async componentDidMount(){
 
@@ -142,28 +157,19 @@ class Game extends React.Component{
 
     async fetchData(){
         try{
-            const response = await api.get("game"+this.id);
+            const response = await api.get("game/"+this.id+"/kickOff");
             const game = new GameEntity(response.data);
             this.gamemode = game.gamemode;
             this.host = game.host;
-            this.cardStack = game.cardStack;
+            this.currentplayer = game.currentPlayer;
+            this.currentcolor = game.currentColor;
+            this.currentvalue = game.currentValue;
+
 
         }catch(error){
             alert(`Something went wrong during the fetch of the game information data: \n${handleError(error)}`);
         }
     }
-    async currentPlayer(){
-        try{
-            const response = await api.get("game/"+this.id+"/kickOff/currentPlayerIds");
-            const current = new CurrentPlayerEntity(response.data);
-            this.currentplayer = current.currentplayer;
-
-        }catch(error){
-            alert(`Something went wrong during the fetch of the game information data: \n${handleError(error)}`);
-        }
-
-    }
-
 
     async deleteGame(){
         try{
@@ -173,12 +179,9 @@ class Game extends React.Component{
         }
     }
     async playCard(card){
-        console.log(this.currentplayer);
-        console.log(this.userid);
-        if(this.currentplayer === this.userid) {
+        if(this.currentplayer == this.userid) {
             var str = card.split('/');
             var color = str[0];
-            color = color.charAt(0).toUpperCase() + color.slice(1);
             var value = str[1];
             const requestBody = JSON.stringify({
                 playerId: this.userid,
@@ -187,7 +190,7 @@ class Game extends React.Component{
             });
             const response = await api.put("game/" + this.id + "/playerTurn", requestBody);
             this.getHand();
-            this.currentPlayer();
+            this.fetchData();
         }
     }
     async getHand(){
@@ -213,19 +216,19 @@ class Game extends React.Component{
                 value = cardarray[j][1];
                 switch(color) {
                   case "Yellow" : 
-                    cardtransformed[j] = "yellow/" + value;
+                    cardtransformed[j] = "Yellow/" + value;
                     break;  
                   case "Wild" :
-                    cardtransformed[j] = "wild/" + value;
+                    cardtransformed[j] = "Wild/" + value;
                     break;
                   case "Blue" :
-                    cardtransformed[j] = "blue/" + value;
+                    cardtransformed[j] = "Blue/" + value;
                     break;          
                   case "Red" :
-                    cardtransformed[j] = "red/" + value;
+                    cardtransformed[j] = "Red/" + value;
                     break;     
                   case "Green" :
-                    cardtransformed[j] = "green/" + value;
+                    cardtransformed[j] = "Green/" + value;
                     break;                 
                 }
             }
@@ -237,9 +240,11 @@ class Game extends React.Component{
           </div>
 
      */
+    drawCard() {
+
+    }
     render() {
       return (
-
       <Container2>
         <Container>
   
@@ -258,11 +263,27 @@ class Game extends React.Component{
               )}
 
             </section>
+            {!this.currentcolor && !this.currentvalue ?(
+                <Spinner/>
+                ) : (
+                <div className="card">
+                    <img src={require(`../../views/Images/CardDesigns/standard/${this.currentcolor}/${this.currentvalue}.png`).default}/>
+                </div>
+            )
+            }
+
+            <Button
+                onClick={() =>{
+                    this.drawCard();
+            }}>
+            draw card
+            </Button>
         </Container>
       </Container2>
       )
     }
-    
+
+
 }
 
 export default withRouter(Game)
