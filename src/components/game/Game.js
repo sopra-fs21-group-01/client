@@ -16,6 +16,55 @@ import Hand from '../shared/models/Hand';
 import GameEntity from '../shared/models/GameEntity';
 import yellow_1 from '../../views/Images/CardDesigns/standard/yellow/1.png';
 import yellow_2 from '../../views/Images/CardDesigns/standard/yellow/2.png';
+import yellow_3 from '../../views/Images/CardDesigns/standard/yellow/3.png';
+import yellow_4 from '../../views/Images/CardDesigns/standard/yellow/4.png';
+import yellow_5 from '../../views/Images/CardDesigns/standard/yellow/5.png';
+import yellow_6 from '../../views/Images/CardDesigns/standard/yellow/6.png';
+import yellow_7 from '../../views/Images/CardDesigns/standard/yellow/7.png';
+import yellow_8 from '../../views/Images/CardDesigns/standard/yellow/8.png';
+import yellow_9 from '../../views/Images/CardDesigns/standard/yellow/9.png';
+import yellow_DrawTwo from '../../views/Images/CardDesigns/standard/yellow/+2.png';
+import yellow_Reverse from '../../views/Images/CardDesigns/standard/yellow/reverse.png';
+import yellow_Skip from '../../views/Images/CardDesigns/standard/yellow/skip.png';
+import blue_1 from '../../views/Images/CardDesigns/standard/blue/1.png';
+import blue_2 from '../../views/Images/CardDesigns/standard/blue/2.png';
+import blue_3 from '../../views/Images/CardDesigns/standard/blue/3.png';
+import blue_4 from '../../views/Images/CardDesigns/standard/blue/4.png';
+import blue_5 from '../../views/Images/CardDesigns/standard/blue/5.png';
+import blue_6 from '../../views/Images/CardDesigns/standard/blue/6.png';
+import blue_7 from '../../views/Images/CardDesigns/standard/blue/7.png';
+import blue_8 from '../../views/Images/CardDesigns/standard/blue/8.png';
+import blue_9 from '../../views/Images/CardDesigns/standard/blue/9.png';
+import blue_DrawTwo from '../../views/Images/CardDesigns/standard/blue/+2.png';
+import blue_Reverse from '../../views/Images/CardDesigns/standard/blue/reverse.png';
+import blue_Skip from '../../views/Images/CardDesigns/standard/blue/skip.png';
+import green_1 from '../../views/Images/CardDesigns/standard/green/1.png';
+import green_2 from '../../views/Images/CardDesigns/standard/green/2.png';
+import green_3 from '../../views/Images/CardDesigns/standard/green/3.png';
+import green_4 from '../../views/Images/CardDesigns/standard/green/4.png';
+import green_5 from '../../views/Images/CardDesigns/standard/green/5.png';
+import green_6 from '../../views/Images/CardDesigns/standard/green/6.png';
+import green_7 from '../../views/Images/CardDesigns/standard/green/7.png';
+import green_8 from '../../views/Images/CardDesigns/standard/green/8.png';
+import green_9 from '../../views/Images/CardDesigns/standard/green/9.png';
+import green_DrawTwo from '../../views/Images/CardDesigns/standard/green/+2.png';
+import green_Reverse from '../../views/Images/CardDesigns/standard/green/reverse.png';
+import green_Skip from '../../views/Images/CardDesigns/standard/green/skip.png';
+import red_1 from '../../views/Images/CardDesigns/standard/red/1.png';
+import red_2 from '../../views/Images/CardDesigns/standard/red/2.png';
+import red_3 from '../../views/Images/CardDesigns/standard/red/3.png';
+import red_4 from '../../views/Images/CardDesigns/standard/red/4.png';
+import red_5 from '../../views/Images/CardDesigns/standard/red/5.png';
+import red_6 from '../../views/Images/CardDesigns/standard/red/6.png';
+import red_7 from '../../views/Images/CardDesigns/standard/red/7.png';
+import red_8 from '../../views/Images/CardDesigns/standard/red/8.png';
+import red_9 from '../../views/Images/CardDesigns/standard/red/9.png';
+import red_DrawTwo from '../../views/Images/CardDesigns/standard/red/+2.png';
+import red_Reverse from '../../views/Images/CardDesigns/standard/red/reverse.png';
+import red_Skip from '../../views/Images/CardDesigns/standard/red/skip.png';
+import back from '../../views/Images/CardDesigns/standard/Back.png';
+import wild from '../../views/Images/CardDesigns/standard/wild.png';
+import wild_WildFour from '../../views/Images/CardDesigns/standard/wild_four.png';
 
 const Users = styled.ul`
   list-style: none;
@@ -169,7 +218,9 @@ class Game extends React.Component{
       const response = await api.get(`users/${userid}/hands`);
       const hand = new Hand(response.data);
       this.playerHand = hand.cards;
-      
+      } catch(error){
+        alert(`Something went wrong during the fetch of the game information data: \n${handleError(error)}`);
+    }
       var i;
       var cardarray = [];
       for (i = 0; i< (this.playerHand.length); i++) {
@@ -204,9 +255,6 @@ class Game extends React.Component{
       this.setState({ convertedHand: cardtransformed});
       //console.log(cardarray); 
       console.log(this.state.convertedHand); 
-          } catch(error){
-            alert(`Something went wrong during the fetch of the game information data: \n${handleError(error)}`);
-        }
     }
 
     render() {
@@ -217,14 +265,20 @@ class Game extends React.Component{
           <TitelContainer>
             <h2>Lets start the game</h2>
           </TitelContainer>
-  
+          {!this.state.convertedHand ? (
+            <Spinner />
+            ) : (
           <div style={{ backgroundImage: `url(${UnoTable}) `}}>
           <img src={UnoTable} />
-          </div>
 
-    {/* nimmt 1. karte und konvertiert de string zu de variable (nonit alli karte sin importiert worde) */}
-          {/* <img src={window[this.state.convertedHand[0]]}/> */}
-        
+   
+          <img src={window[this.state.convertedHand[0]]}/>
+
+
+          </div>)}
+
+
+  
         </Container>
       </Container2>
       )
