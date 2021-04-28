@@ -25,7 +25,7 @@ const TitelContainer = styled.div`
   color: black;
   font-weight: bold;
   font-size: 40px;
-  margin-bottom: -60px;
+  margin-bottom: 10px;
 `;
 
 const TitelContainer2 = styled.div`

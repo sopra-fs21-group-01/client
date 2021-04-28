@@ -5,6 +5,7 @@ import { api, handleError } from '../../helpers/api';
 import { Button } from '../../views/design/Button';
 import { Button2 } from '../../views/design/Button2';
 import { Button3 } from '../../views/design/Button3';
+import { Button4 } from '../../views/design/Button4';
 import '../../views/design/Card.css';
 import { withRouter } from 'react-router-dom';
 import Dropdown from 'react-bootstrap/Dropdown';
@@ -15,6 +16,7 @@ import PlayerList from '../shared/models/PlayerList';
 import Player from '../../views/Player';
 import Hand from '../shared/models/Hand';
 import GameEntity from '../shared/models/GameEntity';
+import Back from '../../views/Images/CardDesigns/standard/Back.png';
 
 const Users = styled.ul`
   list-style: none;
@@ -51,10 +53,9 @@ const TitelContainer = styled.div`
 
 const ButtonContainer = styled.div`
   display: flex;
-  justify-content: center;
-  margin-top: 20px;
-  margin-bottom: 20px;
+  position: relative;
   cursor: pointer;
+  left: -100%;
 `;
 const CardContainer = styled.div`
   display: flex;
@@ -243,6 +244,10 @@ class Game extends React.Component{
     drawCard() {
 
     }
+
+    return() {
+      this.props.history.push('/game/mainmenu');
+    }
     render() {
       return (
       <Container2>
@@ -251,6 +256,41 @@ class Game extends React.Component{
           <TitelContainer>
             <h2>Lets start the game</h2>
           </TitelContainer>
+          
+          <div style={{ backgroundImage: `url(${UnoTable}) `, backgroundRepeat: 'no-repeat', margin: '140px auto' , width: "107%"}}>
+
+          <div style={{display: 'flex', position: 'absolute', top: '38%', left: '49%'}}>
+    
+            {!this.currentcolor && !this.currentvalue ?(
+                <Spinner/>
+                ) : (
+                <div className="card">
+                    <img src={require(`../../views/Images/CardDesigns/standard/${this.currentcolor}/${this.currentvalue}.png`).default}/>
+                </div>
+            )
+            }
+          </div>   
+
+          <ButtonContainer>
+          <Button2 
+            width="20%" 
+            onClick={() => {this.return()}}
+          >
+            Leave
+          </Button2>
+        </ButtonContainer>
+          <div style={{display: 'flex', position: 'absolute', top: '43%', left: '58.7%', zIndex:'+1'}}>
+            <Button4
+                onClick={() =>{
+                    this.drawCard();
+            }}>
+            draw card
+            </Button4>
+            </div>   
+          <div style={{display: 'flex', position: 'absolute', top: '38%', left: '58%'}}>    
+            <img src= {Back}></img>
+          </div>
+          <div style={{display: 'flex',  justifyContent:'center', alignItems:'center', height: '100vh'}}>
             <section className="content card">
               {!this.state.convertedHand ? (
                 <Spinner />
@@ -263,21 +303,13 @@ class Game extends React.Component{
               )}
 
             </section>
-            {!this.currentcolor && !this.currentvalue ?(
-                <Spinner/>
-                ) : (
-                <div className="card">
-                    <img src={require(`../../views/Images/CardDesigns/standard/${this.currentcolor}/${this.currentvalue}.png`).default}/>
-                </div>
-            )
-            }
+          </div>
 
-            <Button
-                onClick={() =>{
-                    this.drawCard();
-            }}>
-            draw card
-            </Button>
+      
+               
+          </div>
+
+ 
         </Container>
       </Container2>
       )
