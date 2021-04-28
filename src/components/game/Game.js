@@ -16,6 +16,7 @@ import Player from '../../views/Player';
 import Hand from '../shared/models/Hand';
 import GameEntity from '../shared/models/GameEntity';
 import blue4 from '../../views/Images/CardDesigns/standard/blue/4.png';
+import CurrentPlayerEntity from "../shared/models/CurrentPlayerEntity";
 
 const Users = styled.ul`
   list-style: none;
@@ -105,7 +106,7 @@ class Game extends React.Component{
         
         // get player's hand
         this.getHand();
-
+        this.currentPlayer();
     }  catch (error) {
         alert(`Something went wrong while fetching the users: \n${handleError(error)}`);
     }
@@ -146,15 +147,16 @@ class Game extends React.Component{
             this.gamemode = game.gamemode;
             this.host = game.host;
             this.cardStack = game.cardStack;
-            
+
         }catch(error){
             alert(`Something went wrong during the fetch of the game information data: \n${handleError(error)}`);
         }
     }
     async currentPlayer(){
         try{
-            const response = await api.get("game"+this.id+"kickOff/currentPlayerIds");
-            this.setState({currentplayer: response.data});
+            const response = await api.get("game/"+this.id+"/kickOff/currentPlayerIds");
+            const current = new CurrentPlayerEntity(response.data);
+            this.currentplayer = current.currentplayer;
 
         }catch(error){
             alert(`Something went wrong during the fetch of the game information data: \n${handleError(error)}`);
@@ -171,19 +173,22 @@ class Game extends React.Component{
         }
     }
     async playCard(card){
-        var str = card.split('/');
-        var color = str[0];
-        color = color.charAt(0).toUpperCase() + color.slice(1);
-        var value = str[1];
-        console.log(color);
-        console.log(value);
-        const requestBody = JSON.stringify({
+        console.log(this.currentplayer);
+        console.log(this.userid);
+        if(this.currentplayer === this.userid) {
+            var str = card.split('/');
+            var color = str[0];
+            color = color.charAt(0).toUpperCase() + color.slice(1);
+            var value = str[1];
+            const requestBody = JSON.stringify({
                 playerId: this.userid,
                 color: color,
                 value: value,
-        });
-        const response = await api.put("game/"+this.id+"/playerTurn", requestBody);
-        this.getHand();
+            });
+            const response = await api.put("game/" + this.id + "/playerTurn", requestBody);
+            this.getHand();
+            this.currentPlayer();
+        }
     }
     async getHand(){
       try {
@@ -234,6 +239,7 @@ class Game extends React.Component{
      */
     render() {
       return (
+
       <Container2>
         <Container>
   
