@@ -14,8 +14,8 @@ import PlayerList from '../shared/models/PlayerList';
 import Player from '../../views/Player';
 import Hand from '../shared/models/Hand';
 import GameEntity from '../shared/models/GameEntity';
-import yellow1 from '../../views/Images/CardDesigns/standard/yellow/1.png';
-import yellow2 from '../../views/Images/CardDesigns/standard/yellow/2.png';
+import yellow_1 from '../../views/Images/CardDesigns/standard/yellow/1.png';
+import yellow_2 from '../../views/Images/CardDesigns/standard/yellow/2.png';
 
 const Users = styled.ul`
   list-style: none;
@@ -56,6 +56,10 @@ const ButtonContainer = styled.div`
   margin-bottom: 20px;
   cursor: pointer;
 `;
+
+window.onunload = () => {
+  window.localStorage.clear()
+}
 
 class Game extends React.Component{
     constructor() {
@@ -159,6 +163,7 @@ class Game extends React.Component{
     }
   
     async getHand(){
+      try {
       
       const userid = localStorage.getItem('id')
       const response = await api.get(`users/${userid}/hands`);
@@ -177,34 +182,31 @@ class Game extends React.Component{
       var cardtransformed = [];
       for (let j = 0; j < cardarray.length ; j++){
                 color = cardarray[j][0];
+                value = cardarray[j][1];
                 switch(color) {
                   case "Yellow" : 
-                    value = cardarray[j][1];
-                    switch(value) {
-                      case "1" :
-                        cardtransformed[j] = "yellow1";
-                        break;
-                      case "2" :
-                        cardtransformed[j] = "yellow2";
-                        break; 
-                      case "3" :
-                        cardtransformed[j] = "yellow3";
-                        break;
-                      }
-
+                    cardtransformed[j] = "yellow_" + value;
+                    break;  
                   case "Wild" :
-                    value = cardarray[j][1];
-                    switch(value) {
-                      case "Wild" :
-                        cardtransformed[j] = "wild";
-                        break;
-                    }
-                    
+                    cardtransformed[j] = "wild_" + value;
+                    break;
+                  case "Blue" :
+                    cardtransformed[j] = "blue_" + value;
+                    break;          
+                  case "Red" :
+                    cardtransformed[j] = "red_" + value;
+                    break;     
+                  case "Green" :
+                    cardtransformed[j] = "green_" + value;
+                    break;                 
                 }
             }
       this.setState({ convertedHand: cardtransformed});
       //console.log(cardarray); 
       console.log(this.state.convertedHand); 
+          } catch(error){
+            alert(`Something went wrong during the fetch of the game information data: \n${handleError(error)}`);
+        }
     }
 
     render() {
@@ -220,8 +222,8 @@ class Game extends React.Component{
           <img src={UnoTable} />
           </div>
 
-
-          <img src={window[this.state.convertedHand[0]]}/>
+    {/* nimmt 1. karte und konvertiert de string zu de variable (nonit alli karte sin importiert worde) */}
+          {/* <img src={window[this.state.convertedHand[0]]}/> */}
         
         </Container>
       </Container2>
