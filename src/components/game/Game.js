@@ -236,25 +236,25 @@ class Game extends React.Component{
                 value = cardarray[j][1];
                 switch(color) {
                   case "Yellow" : 
-                    cardtransformed[j] = "yellow_" + value;
+                    cardtransformed[j] = "yellow/" + value;
                     break;  
                   case "Wild" :
-                    cardtransformed[j] = "wild_" + value;
+                    cardtransformed[j] = "wild/" + value;
                     break;
                   case "Blue" :
-                    cardtransformed[j] = "blue_" + value;
+                    cardtransformed[j] = "blue/" + value;
                     break;          
                   case "Red" :
-                    cardtransformed[j] = "red_" + value;
+                    cardtransformed[j] = "red/" + value;
                     break;     
                   case "Green" :
-                    cardtransformed[j] = "green_" + value;
+                    cardtransformed[j] = "green/" + value;
                     break;                 
                 }
             }
       this.setState({ convertedHand: cardtransformed});
       //console.log(cardarray); 
-      console.log(this.state.convertedHand); 
+      console.log(this.state.convertedHand[0]);
     }
 
     render() {
@@ -268,14 +268,16 @@ class Game extends React.Component{
           {!this.state.convertedHand ? (
             <Spinner />
             ) : (
-          <div style={{ backgroundImage: `url(${UnoTable}) `}}>
-          <img src={UnoTable} />
-
-   
-          <img src={window[this.state.convertedHand[0]]}/>
 
 
-          </div>)}
+              (this.state.convertedHand).map(i => (
+                  <img
+                      src={require(`../../views/Images/CardDesigns/standard/${i}.png`).default}
+                  />
+              ))
+
+
+         )}
 
 
   
