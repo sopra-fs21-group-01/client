@@ -5,6 +5,7 @@ import { api, handleError } from '../../helpers/api';
 import { Button } from '../../views/design/Button';
 import { Button2 } from '../../views/design/Button2';
 import { Button3 } from '../../views/design/Button3';
+import '../../views/design/Card.css';
 import { withRouter } from 'react-router-dom';
 import Dropdown from 'react-bootstrap/Dropdown';
 import { Spinner } from '../../views/design/Spinner';
@@ -36,6 +37,7 @@ const Container2 = styled.div`
 const Container = styled(BaseContainer)`
   color: black;
   text-align: center;
+  
 `;
 
 const TitelContainer = styled.div`
@@ -55,6 +57,13 @@ const ButtonContainer = styled.div`
   margin-bottom: 20px;
   cursor: pointer;
 `;
+const CardContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  cursor: pointer;
+`;
 
 window.onunload = () => {
   window.localStorage.clear()
@@ -66,22 +75,25 @@ class Game extends React.Component{
         this.state = {
             opponentList: null,
             playerHand: null,
-            id: localStorage.getItem("LobbyID"),
+            id: null,
             gamemode: null,
             host: null,
             cardStack: null,
             convertedHand: null,
+            userid: null
+
             
             // TODO eventuell noch gamedirection für frontend per getrequest holen
         };
+        this.userid = localStorage.getItem("id");
+        this.id = localStorage.getItem("lobbyId");
     }
     
 
   async componentDidMount(){
     try {
-      
-        const lobbyId = localStorage.getItem('lobbyId');
-        const response = await api.get(`lobbies/${lobbyId}`);
+        const response = await api.get(`lobbies/${this.id}`);
+
 
         // get opponents
         const opponentList = new PlayerList(response.data);
@@ -126,19 +138,14 @@ class Game extends React.Component{
                    }
            } */
 
-  
-
-    
-    
-
     async fetchData(){
         try{
             const response = await api.get("game"+this.id);
             const game = new GameEntity(response.data);
-            this.players = game.playerList;
             this.gamemode = game.gamemode;
             this.host = game.host;
             this.cardStack = game.cardStack;
+
 
         }catch(error){
             alert(`Something went wrong during the fetch of the game information data: \n${handleError(error)}`);
@@ -152,20 +159,18 @@ class Game extends React.Component{
             alert(`Something went wrong during the deletion of the game: \n${handleError(error)}`);
         }
     }
-    async playCard(ID, color, value){
+    async playCard(){
+
         const requestBody = JSON.stringify({
-                playerId: ID,
-                color: color,
-                value: value,
+                playerId: this.userid,
+                color: "1",
+                value: "Blue",
         });
-        const response = await api.put("/game/"+this.id+"/playerTurn", requestBody);
+        const response = await api.put("game/"+this.id+"/playerTurn", requestBody);
     }
-  
     async getHand(){
       try {
-      
-      const userid = localStorage.getItem('id')
-      const response = await api.get(`users/${userid}/hands`);
+      const response = await api.get(`users/${this.userid}/hands`);
       const hand = new Hand(response.data);
       this.playerHand = hand.cards;
       } catch(error){
@@ -205,6 +210,11 @@ class Game extends React.Component{
       this.setState({ convertedHand: cardtransformed});
       //console.log(cardarray); 
       console.log(this.state.convertedHand[0]);
+
+        console.log(cardarray);
+        console.log("/game/"+this.id+"/playerTurn");
+
+
     }
 
     render() {
@@ -219,7 +229,6 @@ class Game extends React.Component{
             <Spinner />
             ) : (
 
-
               (this.state.convertedHand).map(i => (
                   <img
                       src={require(`../../views/Images/CardDesigns/standard/${i}.png`).default}
@@ -228,9 +237,17 @@ class Game extends React.Component{
 
 
          )}
-
-
-  
+          <div style={{ backgroundImage: `url(${UnoTable}) `}}>
+          <img src={UnoTable} style={{width: '100%'}} />
+          </div>
+            <section className="content card">
+                <div className="card-hghlght card">
+                    <img src={blue4} onClick={async () => this.playCard} alt={"Image not loaded"} />
+                </div>
+                <div className="card-hghlght card">
+                    <img src={"0"} alt={"Image not loaded"}/>
+                </div>
+            </section>
         </Container>
       </Container2>
       )
