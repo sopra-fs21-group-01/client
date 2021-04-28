@@ -14,7 +14,8 @@ import PlayerList from '../shared/models/PlayerList';
 import Player from '../../views/Player';
 import Hand from '../shared/models/Hand';
 import GameEntity from '../shared/models/GameEntity';
-import blue4 from '../../views/Images/CardDesigns/standard/blue/4.png';
+import yellow1 from '../../views/Images/CardDesigns/standard/yellow/1.png';
+import yellow2 from '../../views/Images/CardDesigns/standard/yellow/2.png';
 
 const Users = styled.ul`
   list-style: none;
@@ -66,14 +67,16 @@ class Game extends React.Component{
             gamemode: null,
             host: null,
             cardStack: null,
+            convertedHand: null,
             
             // TODO eventuell noch gamedirection für frontend per getrequest holen
         };
     }
-
+    
 
   async componentDidMount(){
     try {
+      
         const lobbyId = localStorage.getItem('lobbyId');
         const response = await api.get(`lobbies/${lobbyId}`);
 
@@ -154,6 +157,7 @@ class Game extends React.Component{
         });
         const response = await api.put("/game/"+this.id+"/playerTurn", requestBody);
     }
+  
     async getHand(){
       
       const userid = localStorage.getItem('id')
@@ -169,27 +173,38 @@ class Game extends React.Component{
           var color = str[1];
           cardarray.push([color,value]);
           
-        
-   
         }
+      var cardtransformed = [];
       for (let j = 0; j < cardarray.length ; j++){
                 color = cardarray[j][0];
                 switch(color) {
-                  case "Blue" :
+                  case "Yellow" : 
                     value = cardarray[j][1];
                     switch(value) {
                       case "1" :
-                         // show corresponding card
+                        cardtransformed[j] = "yellow1";
+                        break;
                       case "2" :
-                        //  show corresponding card
+                        cardtransformed[j] = "yellow2";
+                        break; 
                       case "3" :
-                        // show corresponding card
-                      //usw
+                        cardtransformed[j] = "yellow3";
+                        break;
+                      }
+
+                  case "Wild" :
+                    value = cardarray[j][1];
+                    switch(value) {
+                      case "Wild" :
+                        cardtransformed[j] = "wild";
+                        break;
                     }
+                    
                 }
             }
-    
-    console.log(cardarray); 
+      this.setState({ convertedHand: cardtransformed});
+      //console.log(cardarray); 
+      console.log(this.state.convertedHand); 
     }
 
     render() {
@@ -200,12 +215,13 @@ class Game extends React.Component{
           <TitelContainer>
             <h2>Lets start the game</h2>
           </TitelContainer>
-
-
+  
           <div style={{ backgroundImage: `url(${UnoTable}) `}}>
           <img src={UnoTable} />
           </div>
 
+
+          <img src={window[this.state.convertedHand[0]]}/>
         
         </Container>
       </Container2>
