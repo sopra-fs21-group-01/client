@@ -15,7 +15,7 @@ import PlayerList from '../shared/models/PlayerList';
 import Player from '../../views/Player';
 import Hand from '../shared/models/Hand';
 import GameEntity from '../shared/models/GameEntity';
-
+import blue4 from '../../views/Images/CardDesigns/standard/blue/4.png';
 
 const Users = styled.ul`
   list-style: none;
@@ -80,7 +80,8 @@ class Game extends React.Component{
             host: null,
             cardStack: null,
             convertedHand: null,
-            userid: null
+            userid: null,
+            currentplayer: null
 
             
             // TODO eventuell noch gamedirection für frontend per getrequest holen
@@ -145,12 +146,22 @@ class Game extends React.Component{
             this.gamemode = game.gamemode;
             this.host = game.host;
             this.cardStack = game.cardStack;
-
-
+            
         }catch(error){
             alert(`Something went wrong during the fetch of the game information data: \n${handleError(error)}`);
         }
     }
+    async currentPlayer(){
+        try{
+            const response = await api.get("game"+this.id+"kickOff/currentPlayerIds");
+            this.setState({currentplayer: response.data});
+
+        }catch(error){
+            alert(`Something went wrong during the fetch of the game information data: \n${handleError(error)}`);
+        }
+
+    }
+
 
     async deleteGame(){
         try{
@@ -159,14 +170,20 @@ class Game extends React.Component{
             alert(`Something went wrong during the deletion of the game: \n${handleError(error)}`);
         }
     }
-    async playCard(){
-
+    async playCard(card){
+        var str = card.split('/');
+        var color = str[0];
+        color = color.charAt(0).toUpperCase() + color.slice(1);
+        var value = str[1];
+        console.log(color);
+        console.log(value);
         const requestBody = JSON.stringify({
                 playerId: this.userid,
-                color: "1",
-                value: "Blue",
+                color: color,
+                value: value,
         });
         const response = await api.put("game/"+this.id+"/playerTurn", requestBody);
+        this.getHand();
     }
     async getHand(){
       try {
@@ -208,15 +225,13 @@ class Game extends React.Component{
                 }
             }
       this.setState({ convertedHand: cardtransformed});
-      //console.log(cardarray); 
-      console.log(this.state.convertedHand[0]);
-
-        console.log(cardarray);
-        console.log("/game/"+this.id+"/playerTurn");
-
-
+      //console.log(cardarray);console.log(this.state.convertedHand[0]);
     }
+    /* <div style={{ backgroundImage: `url(${UnoTable}) `}}>
+                <img src={UnoTable} style={{width: '100%'}} />
+          </div>
 
+     */
     render() {
       return (
       <Container2>
@@ -225,28 +240,17 @@ class Game extends React.Component{
           <TitelContainer>
             <h2>Lets start the game</h2>
           </TitelContainer>
-          {!this.state.convertedHand ? (
-            <Spinner />
-            ) : (
-
-              (this.state.convertedHand).map(i => (
-                  <img
-                      src={require(`../../views/Images/CardDesigns/standard/${i}.png`).default}
-                  />
-              ))
-
-
-         )}
-          <div style={{ backgroundImage: `url(${UnoTable}) `}}>
-          <img src={UnoTable} style={{width: '100%'}} />
-          </div>
             <section className="content card">
-                <div className="card-hghlght card">
-                    <img src={blue4} onClick={async () => this.playCard} alt={"Image not loaded"} />
-                </div>
-                <div className="card-hghlght card">
-                    <img src={"0"} alt={"Image not loaded"}/>
-                </div>
+              {!this.state.convertedHand ? (
+                <Spinner />
+                ) : (
+                  (this.state.convertedHand).map(i => (
+                      <div className="card-hghlght card">
+                      <img src={require(`../../views/Images/CardDesigns/standard/${i}.png`).default} onClick={async () => this.playCard(i)} alt={"Image not loaded"} />
+                      </div>
+                  ))
+              )}
+
             </section>
         </Container>
       </Container2>
