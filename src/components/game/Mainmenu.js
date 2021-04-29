@@ -67,6 +67,7 @@ class Mainmenu extends React.Component {
     finally {
       localStorage.removeItem('token');
       localStorage.removeItem('id');
+      localStorage.clear()
       this.props.history.push('/login');
     }
   }

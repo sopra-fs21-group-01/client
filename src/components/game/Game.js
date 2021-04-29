@@ -84,6 +84,7 @@ class Game extends React.Component{
             currentplayer: null,
             currentcolor: null,
             currentvalue: null,
+            opponentListId:null,
 
             
             // TODO eventuell noch gamedirection für frontend per getrequest holen
@@ -103,8 +104,15 @@ class Game extends React.Component{
             const opponentList = new PlayerList(response.data);
             var playerIndex = (opponentList.playerList).indexOf(localStorage.getItem('username'))
             opponentList.playerList.splice(playerIndex, 1); // remove main player
-            this.setState({opponentList: JSON.stringify(opponentList.playerList)});
+            this.setState({opponentList: (opponentList.playerList)});
             localStorage.setItem('opponentList', JSON.stringify(opponentList.playerList));
+/*
+            var opponentListId = opponentList.playerList;
+            for (let i=0; i<opponentListId.length; i++) {
+                opponentListId[i] = i+1;
+            }
+            this.setState({opponentListId:opponentListId});
+*/
 
             // get player's hand
             this.getHand();
@@ -241,7 +249,17 @@ class Game extends React.Component{
           </div>
 
      */
-    drawCard() {
+    async drawCard() {
+        const response = await api.put("game/" + this.id + "/drawCard");
+
+    }
+
+    async sayUno() {
+        const requestBody = JSON.stringify({
+            playerId: this.userid,
+        });
+
+        const response = await api.put("game/" + this.id + "/sayUno", requestBody);
 
     }
 
@@ -256,6 +274,13 @@ class Game extends React.Component{
           <TitelContainer>
             <h2>Lets start the game</h2>
           </TitelContainer>
+            {/*!this.state.opponentListId ? (
+                <Spinner />
+            ) : (
+                (this.state.opponentListId).map(i => (
+                        <img src={require(`../../views/Images/Avatar/${i}.png`).default} alt={"Image not loaded"} />
+                ))
+            )*/}
           
           <div style={{ backgroundImage: `url(${UnoTable}) `, backgroundRepeat: 'no-repeat', margin: '140px auto' , width: "107%"}}>
 
@@ -281,13 +306,24 @@ class Game extends React.Component{
         </ButtonContainer>
           <div style={{display: 'flex', position: 'absolute', top: '43%', left: '58.7%', zIndex:'+1'}}>
             <Button4
+                disabled={this.currentplayer != this.userid}
                 onClick={() =>{
                     this.drawCard();
             }}>
             draw card
             </Button4>
-            </div>   
-          <div style={{display: 'flex', position: 'absolute', top: '38%', left: '58%'}}>    
+            </div>
+              <div style={{display: 'flex', position: 'absolute', top: '43%', left: '70%', zIndex:'+1'}}>
+                  <Button4
+                      onClick={() =>{
+                          this.sayUno();
+                          console.log(this.state.convertedHand);
+                          console.log(this.state.opponentList);
+                      }}>
+                      UNO
+                  </Button4>
+              </div>
+              <div style={{display: 'flex', position: 'absolute', top: '38%', left: '58%'}}>
             <img src= {Back}></img>
           </div>
           <div style={{display: 'flex',  justifyContent:'center', alignItems:'center', height: '100vh'}}>
