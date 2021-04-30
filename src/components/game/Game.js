@@ -95,7 +95,7 @@ class Game extends React.Component{
     
 
       async componentDidMount(){
-        this.updateInterval = setInterval(()=> (this.checkStatus(), 5000));
+        this.updateInterval = setInterval(()=> (this.checkStatus(), 10000));
         try {
             const response = await api.get(`lobbies/${this.id}`);
 
@@ -106,18 +106,12 @@ class Game extends React.Component{
             opponentList.playerList.splice(playerIndex, 1); // remove main player
             this.setState({opponentList: (opponentList.playerList)});
             localStorage.setItem('opponentList', JSON.stringify(opponentList.playerList));
-/*
-            var opponentListId = opponentList.playerList;
-            for (let i=0; i<opponentListId.length; i++) {
-                opponentListId[i] = i+1;
-            }
-            this.setState({opponentListId:opponentListId});
-*/
+
 
             // get player's hand
             this.getHand();
             this.fetchData();
-            console.log(this.currentvalue);
+            console.log(this.opponentListId);
             console.log(this.currentcolor);
         }  catch (error) {
             alert(`Something went wrong while fetching the users: \n${handleError(error)}`);
@@ -127,6 +121,7 @@ class Game extends React.Component{
         try {
             this.getHand();
             this.fetchData();
+
         }
         catch (error) {
             alert(`Something went wrong when fetching currentplayer: \n${handleError(error)}`);
@@ -173,11 +168,45 @@ class Game extends React.Component{
             this.currentplayer = game.currentPlayer;
             this.currentcolor = game.currentColor;
             this.currentvalue = game.currentValue;
+            this.opponentListId = game.opponentListHands;
+
+            this.getOpponentHands();
+
 
 
         }catch(error){
             alert(`Something went wrong during the fetch of the game information data: \n${handleError(error)}`);
         }
+    }
+
+    getOpponentHands(){
+
+        if(this.opponentListId){
+            var j;
+            console.log(this.opponentListId);
+            for (j = 0; j< (this.opponentListId.length); j++) {
+                if(this.opponentListId[j].slice(0,1)== String(this.userid)){
+                    this.opponentListId.splice(j,1);
+                }
+            }
+
+            console.log(this.opponentListId);
+            console.log(this.opponentListId[0]);
+            console.log(this.opponentListId[0].split(","));
+            var i;
+            var opponentListNested = [];
+            for (i = 0; i< (this.opponentListId.length); i++) {
+                var str = this.opponentListId[i].split(',');
+                console.log(this.opponentListId);
+                var playerId = str[0];
+                var username = str[1];
+                var nrOfCards = str[2];
+                opponentListNested.push([playerId,username,nrOfCards]);
+
+            }
+            this.opponentListId =opponentListNested;
+        }
+
     }
 
     async deleteGame(){
@@ -258,7 +287,7 @@ class Game extends React.Component{
         const requestBody = JSON.stringify({
             playerId: this.userid,
         });
-
+console.log(this.opponentListId);
         const response = await api.put("game/" + this.id + "/sayUno", requestBody);
 
     }
@@ -274,17 +303,20 @@ class Game extends React.Component{
           <TitelContainer>
             <h2>Lets start the game</h2>
           </TitelContainer>
-            {/*!this.state.opponentListId ? (
+            {!this.opponentListId ? (
                 <Spinner />
             ) : (
-                (this.state.opponentListId).map(i => (
-                        <img src={require(`../../views/Images/Avatar/${i}.png`).default} alt={"Image not loaded"} />
+                (this.opponentListId).map(i => (
+                    <div>
+                        {i[1]}{i[2]}
+                        <img src={require(`../../views/Images/Avatar/${i[0]}.png`).default} alt={"Image not loaded"} />
+                        </div>
                 ))
-            )*/}
+            )}
           
           <div style={{ backgroundImage: `url(${UnoTable}) `, backgroundRepeat: 'no-repeat', margin: '140px auto' , width: "107%"}}>
 
-          <div style={{display: 'flex', position: 'absolute', top: '38%', left: '49%'}}>
+          <div style={{display: 'flex', position: 'absolute', top: '55%', left: '49%'}}>
     
             {!this.currentcolor && !this.currentvalue ?(
                 <Spinner/>
@@ -304,7 +336,7 @@ class Game extends React.Component{
             Leave
           </Button2>
         </ButtonContainer>
-          <div style={{display: 'flex', position: 'absolute', top: '43%', left: '58.7%', zIndex:'+1'}}>
+          <div style={{display: 'flex', position: 'absolute', top: '60%', left: '58.7%', zIndex:'+1'}}>
             <Button4
                 disabled={this.currentplayer != this.userid}
                 onClick={() =>{
@@ -313,17 +345,16 @@ class Game extends React.Component{
             draw card
             </Button4>
             </div>
-              <div style={{display: 'flex', position: 'absolute', top: '43%', left: '70%', zIndex:'+1'}}>
+              <div style={{display: 'flex', position: 'absolute', top: '60%', left: '70%', zIndex:'+1'}}>
                   <Button4
                       onClick={() =>{
                           this.sayUno();
-                          console.log(this.state.convertedHand);
-                          console.log(this.state.opponentList);
+
                       }}>
                       UNO
                   </Button4>
               </div>
-              <div style={{display: 'flex', position: 'absolute', top: '38%', left: '58%'}}>
+              <div style={{display: 'flex', position: 'absolute', top: '55%', left: '58%'}}>
             <img src= {Back}></img>
           </div>
           <div style={{display: 'flex',  justifyContent:'center', alignItems:'center', height: '100vh'}}>

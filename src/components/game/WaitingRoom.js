@@ -49,7 +49,7 @@ class WaitingRoom extends React.Component {
   }
 
   componentDidMount(){
-       this.updateInterval = setInterval(()=> (this.checkStatus(), 1000));
+       this.updateInterval = setInterval(()=> (this.checkStatus(), 5000));
        }
 
      async checkStatus(){
@@ -61,7 +61,7 @@ class WaitingRoom extends React.Component {
 
              if (response.data.inGame == true)
              {
-             this.props.history.push('/game/running')
+                 this.props.history.push('/game/running')
              }
      }
          catch (error) {

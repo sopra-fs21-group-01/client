@@ -5,7 +5,7 @@ class GameEntity {
         this.currentPlayer = null;
         this.currentValue = null;
         this.currentColor = null;
-        // this.playerList = null;
+        this.opponentListHands = null;
         // this.gamemode = null;
         // this.inGame = null;
         Object.assign(this, data);
