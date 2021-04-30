@@ -49,7 +49,7 @@ class WaitingRoom extends React.Component {
   }
 
   componentDidMount(){
-       this.updateInterval = setInterval(()=> (this.checkStatus(), 1000));
+       this.updateInterval = setInterval(()=> (this.checkStatus()), 1000);
        }
 
      async checkStatus(){
