@@ -3,6 +3,9 @@
 /**
 This file contains the general and shared style of your application.
  */
+
+ 
+
 body {
   margin: 0;
   padding: 0;
@@ -37,5 +40,10 @@ h2 {
   -webkit-text-fill-color: transparent;
   -webkit-text-stroke-width: 1px;
   -webkit-text-stroke-color: black
+}
+
+li {
+  font-size: 30px;
+  font-weight: 900;
 }
 

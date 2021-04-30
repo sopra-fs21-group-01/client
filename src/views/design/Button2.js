@@ -15,5 +15,6 @@ export const Button2 = styled.button`
   border-radius: 5px;
   background: rgb(153, 47, 26);
   transition: all 0.3s ease;
+  margin-top: 20px;
 `;
 

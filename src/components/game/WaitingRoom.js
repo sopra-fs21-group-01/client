@@ -44,7 +44,7 @@ class WaitingRoom extends React.Component {
     super();
     this.state = {
       gameID: null,
-      playerList:[]
+      playerList:null
     };
   }
 
@@ -57,8 +57,8 @@ class WaitingRoom extends React.Component {
         const id = localStorage.getItem("lobbyId")
              const response = await api.get('/lobbies/'+id);
              const opponentList = new PlayerList(response.data);
-             this.setState({playerList: JSON.stringify(opponentList.playerList)});
-
+             this.setState({playerList: (opponentList.playerList)});
+             console.log(this.state.playerList);
              if (response.data.inGame == true)
              {
              this.props.history.push('/game/running')
@@ -72,21 +72,29 @@ class WaitingRoom extends React.Component {
    clearInterval(this.updateInterval)
    }
 
-
+  
 
   render() {
+ 
     return (
     <Container2>
       <Container>
         <TitelContainer>
           <h2>Waiting for Game to start</h2>
-             <Spinner />
+          <Spinner />
         </TitelContainer>
         <ButtonContainer>
         </ButtonContainer>
-          <div>
-            { this.state.playerList}
-          </div>
+
+        <h1>Player(s):</h1>
+
+      
+        {!this.state.playerList ? (
+          <Spinner />
+          ) : (
+            (this.state.playerList).map(player => (<li key={player}>{player}</li>))
+        )}
+      
         </Container>
       </Container2>
     )

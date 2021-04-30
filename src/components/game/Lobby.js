@@ -7,6 +7,8 @@ import { Button2 } from '../../views/design/Button2';
 import { Button3 } from '../../views/design/Button3';
 import { withRouter } from 'react-router-dom';
 import Dropdown from 'react-bootstrap/Dropdown';
+import PlayerList from '../shared/models/PlayerList';
+import { Spinner } from '../../views/design/Spinner';
 
 const Container2 = styled.div`
   display: flex;
@@ -42,8 +44,33 @@ class Lobby extends React.Component {
         this.state = {
             id: localStorage.getItem('lobbyId'),
             host: localStorage.getItem('username'),
+            playerList:null
         };
     }
+
+    componentDidMount(){
+      this.updateInterval = setInterval(()=> (this.checkStatus(), 1000));
+      }
+
+    async checkStatus(){
+    try {
+       const id = localStorage.getItem("lobbyId")
+            const response = await api.get('/lobbies/'+id);
+            const opponentList = new PlayerList(response.data);
+            this.setState({playerList: (opponentList.playerList)});
+            console.log(this.state.playerList);
+            if (response.data.inGame == true)
+            {
+            this.props.history.push('/game/running')
+            }
+    }
+        catch (error) {
+                  alert(`Something went wrong when asking if game is started: \n${handleError(error)}`);
+                }
+        }
+  componentWillUnmount(){
+  clearInterval(this.updateInterval)
+  }
 
 
 
@@ -84,18 +111,7 @@ class Lobby extends React.Component {
           <h2>Lobby</h2>
         </TitelContainer>
           <div>
-            <ButtonContainer>
-              <Button
-              width="100%"
-              onClick={() => {
-                this.invite();
-              }}
-              >
-              Invite Players
-              </Button>
-            </ButtonContainer>
-
-            <Dropdown>
+            {/* <Dropdown>
 
                 <Dropdown.Toggle variant="success" id="dropdown-basic">
                 Game Mode
@@ -106,7 +122,7 @@ class Lobby extends React.Component {
                 <Dropdown.Item href="#/action-2">Special 1</Dropdown.Item>
                 <Dropdown.Item href="#/action-3">Special 2</Dropdown.Item>
                 </Dropdown.Menu>
-            </Dropdown>
+            </Dropdown> */}
 
             <ButtonContainer>
               <Button3
@@ -119,8 +135,17 @@ class Lobby extends React.Component {
               </Button3>
             </ButtonContainer>
 
+            <h1>Player(s):</h1>
+
+         
+              {!this.state.playerList ? (
+                <Spinner />
+                ) : (
+                  (this.state.playerList).map(player => (<li key={player}>{player}</li>))
+              )}
+         
             <Button2
-              width="80%"
+              width="100%"
               onClick={() => {
                 this.closeLobby();
               }}

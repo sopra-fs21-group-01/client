@@ -6,6 +6,7 @@ import { Button } from '../../views/design/Button';
 import { Button2 } from '../../views/design/Button2';
 import { Button3 } from '../../views/design/Button3';
 import { Button4 } from '../../views/design/Button4';
+import { UnoButton } from '../../views/design/UnoButton';
 import '../../views/design/Card.css';
 import { withRouter } from 'react-router-dom';
 import Dropdown from 'react-bootstrap/Dropdown';
@@ -55,7 +56,7 @@ const ButtonContainer = styled.div`
   display: flex;
   position: relative;
   cursor: pointer;
-  left: -100%;
+  left: -50%;
 `;
 const CardContainer = styled.div`
   display: flex;
@@ -316,7 +317,7 @@ class Game extends React.Component{
           
           <div style={{ backgroundImage: `url(${UnoTable}) `, backgroundRepeat: 'no-repeat', margin: '140px auto' , width: "107%"}}>
 
-          <div style={{display: 'flex', position: 'absolute', top: '55%', left: '49%'}}>
+          <div style={{display: 'flex', position: 'absolute', top: '45%', left: '49%'}}>
     
             {!this.currentcolor && !this.currentvalue ?(
                 <Spinner/>
@@ -345,16 +346,17 @@ class Game extends React.Component{
             draw card
             </Button4>
             </div>
-              <div style={{display: 'flex', position: 'absolute', top: '60%', left: '70%', zIndex:'+1'}}>
-                  <Button4
+              <div style={{display: 'flex', position: 'absolute', top: '70%', left: '49%', zIndex:'+1'}}>
+                  <UnoButton
+                      width = "100%"
                       onClick={() =>{
                           this.sayUno();
 
                       }}>
                       UNO
-                  </Button4>
+                  </UnoButton>
               </div>
-              <div style={{display: 'flex', position: 'absolute', top: '55%', left: '58%'}}>
+              <div style={{display: 'flex', position: 'absolute', top: '45%', left: '58%'}}>
             <img src= {Back}></img>
           </div>
           <div style={{display: 'flex',  justifyContent:'center', alignItems:'center', height: '100vh'}}>
