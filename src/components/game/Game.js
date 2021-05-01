@@ -96,6 +96,7 @@ class Game extends React.Component{
             currentcolor: null,
             currentvalue: null,
             opponentListId:null,
+            disabled : false,
 
             
             // TODO eventuell noch gamedirection für frontend per getrequest holen
@@ -188,6 +189,10 @@ class Game extends React.Component{
 
         }catch(error){
             alert(`Something went wrong during the fetch of the game information data: \n${handleError(error)}`);
+        }
+        //sets the draw card button to enabled
+        if(this.currentplayer == this.userid){
+            this.setState({disabled: false});
         }
     }
 
@@ -287,7 +292,14 @@ class Game extends React.Component{
     }
 
     async drawCard() {
-        const response = await api.put("game/" + this.id + "/drawCard");
+        if (this.state.disabled) {
+            return;
+        }
+
+            this.setState({disabled: true});
+            const response = await api.put("game/" + this.id + "/drawCard");
+
+
 
     }
 
@@ -339,10 +351,12 @@ class Game extends React.Component{
           </div>
           <div style={{display: 'flex', position: 'absolute', top: '63%', left: '58.7%', zIndex:'+1'}}>
             <Button4
-                disabled={this.currentplayer != this.userid}
+                disabled={this.currentplayer != this.userid || this.state.disabled}
                 onClick={() =>{
                     this.drawCard();
-            }}>
+                    this.setState({disabled: true});
+
+                }}>
             draw card
             </Button4>
             </div>
