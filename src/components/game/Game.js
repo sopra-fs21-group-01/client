@@ -106,7 +106,7 @@ class Game extends React.Component{
     
 
       async componentDidMount(){
-        this.updateInterval = setInterval(()=> (this.checkStatus()), 1000);
+        this.updateInterval = setInterval(()=> (this.checkStatus()), 500);
 
         try {
             const response = await api.get(`lobbies/${this.id}`);
@@ -312,7 +312,7 @@ class Game extends React.Component{
             <h2>Good Luck & Have Fun!</h2>
           </TitelContainer>
           <TitelContainer2>
-          <h1>It's {this.currentplayerUN}'s turn!</h1>
+              <h1>It's {this.currentplayerUN}'s turn!</h1>
           </TitelContainer2>
   
           <div style={{ backgroundImage: `url(${UnoTable}) `, backgroundRepeat: 'no-repeat', margin: '140px auto' , width: "107%"}}>
@@ -381,7 +381,7 @@ class Game extends React.Component{
                 (this.opponentListId).map(i => (
                     <div>
                         <div style={{width: '200px', height: '60px'}}>
-                        <img src={require(`../../views/Images/Avatar/${i[0]}.png`).default} style={{height: '80px', width: '80px'}} alt={"Image not loaded"}/>
+                        <img src={require(`../../views/Images/Avatar/${i[0]%14}.png`).default} style={{height: '80px', width: '80px'}} alt={"Image not loaded"}/>
                         </div>
                         <br/>
                         {i[1]} <br/>  Cards: {i[2]}
