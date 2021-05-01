@@ -106,7 +106,7 @@ class Game extends React.Component{
     
 
       async componentDidMount(){
-        this.updateInterval = setInterval(()=> (this.checkStatus()), 500);
+        this.updateInterval = setInterval(()=> (this.checkStatus()), 300);
 
         try {
             const response = await api.get(`lobbies/${this.id}`);
