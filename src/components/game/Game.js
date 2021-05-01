@@ -2,20 +2,14 @@ import React from 'react';
 import styled from 'styled-components';
 import { BaseContainer } from '../../helpers/layout';
 import { api, handleError } from '../../helpers/api';
-import { Button } from '../../views/design/Button';
-import { Button2 } from '../../views/design/Button2';
-import { Button3 } from '../../views/design/Button3';
 import { Button4 } from '../../views/design/Button4';
 import { ReturnCircle } from '../../views/design/ReturnCircle';
 import { UnoButton } from '../../views/design/UnoButton';
 import '../../views/design/Card.css';
 import { withRouter } from 'react-router-dom';
-import Dropdown from 'react-bootstrap/Dropdown';
 import { Spinner } from '../../views/design/Spinner';
-import Lobby from '../shared/models/Lobby';
 import UnoTable from '../../views/Images/UnoTable.png';
 import PlayerList from '../shared/models/PlayerList';
-import Player from '../../views/Player';
 import Hand from '../shared/models/Hand';
 import GameEntity from '../shared/models/GameEntity';
 import CurrentPlayer from '../shared/models/CurrentPlayer';
@@ -124,8 +118,6 @@ class Game extends React.Component{
             // get player's hand
             this.getHand();
             this.fetchData();
-            console.log(this.opponentListId);
-            console.log(this.currentcolor);
         }  catch (error) {
             alert(`Something went wrong while fetching the users: \n${handleError(error)}`);
         }
@@ -133,7 +125,8 @@ class Game extends React.Component{
     async checkStatus(){
         try {
             this.getHand();
-            this.fetchData();
+            this.fetchData(); 
+
         }
         catch (error) {
             alert(`Something went wrong when fetching currentplayer: \n${handleError(error)}`);
@@ -181,6 +174,7 @@ class Game extends React.Component{
             this.currentcolor = game.currentColor;
             this.currentvalue = game.currentValue;
             this.opponentListId = game.opponentListHands;
+            
             this.getOpponentHands();
   
             const response2 =  await api.get("users/"+this.currentplayer+"");
@@ -206,20 +200,19 @@ class Game extends React.Component{
                     this.opponentListId.splice(j,1);
                 }
             }
-
-            console.log(this.opponentListId);
-            console.log(this.opponentListId[0]);
-            console.log(this.opponentListId[0].split(","));
             var i;
             var opponentListNested = [];
             for (i = 0; i< (this.opponentListId.length); i++) {
                 var str = this.opponentListId[i].split(',');
-                console.log(this.opponentListId);
                 var playerId = str[0];
                 var username = str[1];
                 var nrOfCards = str[2];
                 opponentListNested.push([playerId,username,nrOfCards]);
 
+                if (nrOfCards == 0) {
+                  alert(username+ " has won!");
+                  this.props.history.push(`/game`);
+                  }
             }
             this.opponentListId =opponentListNested;
         }
@@ -228,7 +221,8 @@ class Game extends React.Component{
 
     async deleteGame(){
         try{
-            await api.delete("game/"+this.id+"deletion")
+            await api.delete("game/"+this.id+"/deletion");
+            await api.delete("lobbies/"+this.id+"");
         }catch(error){
             alert(`Something went wrong during the deletion of the game: \n${handleError(error)}`);
         }
@@ -258,6 +252,11 @@ class Game extends React.Component{
     }
       var i;
       var cardarray = [];
+      if (this.playerHand.length == 0) {
+        alert("Congratulations, you won!");
+        this.props.history.push(`/game`);
+        this.deleteGame();
+      }
       for (i = 0; i< (this.playerHand.length); i++) {
           var str = this.playerHand[i].split('/');
           var value = str[0];
