@@ -6,6 +6,7 @@ import { Button } from '../../views/design/Button';
 import { Button2 } from '../../views/design/Button2';
 import { Button3 } from '../../views/design/Button3';
 import { Button4 } from '../../views/design/Button4';
+import { ReturnCircle } from '../../views/design/ReturnCircle';
 import { UnoButton } from '../../views/design/UnoButton';
 import '../../views/design/Card.css';
 import { withRouter } from 'react-router-dom';
@@ -17,6 +18,7 @@ import PlayerList from '../shared/models/PlayerList';
 import Player from '../../views/Player';
 import Hand from '../shared/models/Hand';
 import GameEntity from '../shared/models/GameEntity';
+import CurrentPlayer from '../shared/models/CurrentPlayer';
 import Back from '../../views/Images/CardDesigns/standard/Back.png';
 
 const Users = styled.ul`
@@ -52,6 +54,13 @@ const TitelContainer = styled.div`
 
 `;
 
+const TitelContainer2 = styled.div`
+  font-family: "Monospace", sans-serif;
+  color: black;
+  font-weight: bold;
+  font-size: 20px;
+`;
+
 const ButtonContainer = styled.div`
   display: flex;
   position: relative;
@@ -83,6 +92,7 @@ class Game extends React.Component{
             convertedHand: null,
             userid: null,
             currentplayer: null,
+            currentplayerUN: null,
             currentcolor: null,
             currentvalue: null,
             opponentListId:null,
@@ -170,10 +180,11 @@ class Game extends React.Component{
             this.currentcolor = game.currentColor;
             this.currentvalue = game.currentValue;
             this.opponentListId = game.opponentListHands;
-
             this.getOpponentHands();
-
-
+  
+            const response2 =  await api.get("users/"+this.currentplayer+"");
+            const currentPlayer = new CurrentPlayer(response2.data);
+            this.currentplayerUN = currentPlayer.username;
 
         }catch(error){
             alert(`Something went wrong during the fetch of the game information data: \n${handleError(error)}`);
@@ -272,13 +283,9 @@ class Game extends React.Component{
                 }
             }
       this.setState({ convertedHand: cardtransformed});
-      //console.log(cardarray);console.log(this.state.convertedHand[0]);
+ 
     }
-    /* <div style={{ backgroundImage: `url(${UnoTable}) `}}>
-                <img src={UnoTable} style={{width: '100%'}} />
-          </div>
 
-     */
     async drawCard() {
         const response = await api.put("game/" + this.id + "/drawCard");
 
@@ -300,24 +307,17 @@ class Game extends React.Component{
       return (
       <Container2>
         <Container>
-  
+
           <TitelContainer>
-            <h2>Lets start the game</h2>
+            <h2>Good Luck & Have Fun!</h2>
           </TitelContainer>
-            {!this.opponentListId ? (
-                <Spinner />
-            ) : (
-                (this.opponentListId).map(i => (
-                    <div>
-                        {i[1]}{i[2]}
-                        <img src={require(`../../views/Images/Avatar/${i[0]}.png`).default} alt={"Image not loaded"} />
-                        </div>
-                ))
-            )}
-          
+          <TitelContainer2>
+          <h1>It's {this.currentplayerUN}'s turn!</h1>
+          </TitelContainer2>
+  
           <div style={{ backgroundImage: `url(${UnoTable}) `, backgroundRepeat: 'no-repeat', margin: '140px auto' , width: "107%"}}>
 
-          <div style={{display: 'flex', position: 'absolute', top: '45%', left: '49%'}}>
+          <div style={{display: 'flex', position: 'absolute', top: '48%', left: '48%'}}>
     
             {!this.currentcolor && !this.currentvalue ?(
                 <Spinner/>
@@ -329,15 +329,15 @@ class Game extends React.Component{
             }
           </div>   
 
-          <ButtonContainer>
-          <Button2 
-            width="20%" 
+          <div style={{display: 'flex', position: 'absolute', top: '10%', left: '10%', zIndex:'+1'}}>
+          <ReturnCircle 
+            width="100%" 
             onClick={() => {this.return()}}
           >
             Leave
-          </Button2>
-        </ButtonContainer>
-          <div style={{display: 'flex', position: 'absolute', top: '60%', left: '58.7%', zIndex:'+1'}}>
+          </ReturnCircle>
+          </div>
+          <div style={{display: 'flex', position: 'absolute', top: '63%', left: '58.7%', zIndex:'+1'}}>
             <Button4
                 disabled={this.currentplayer != this.userid}
                 onClick={() =>{
@@ -346,7 +346,7 @@ class Game extends React.Component{
             draw card
             </Button4>
             </div>
-              <div style={{display: 'flex', position: 'absolute', top: '70%', left: '49%', zIndex:'+1'}}>
+              <div style={{display: 'flex', position: 'absolute', top: '53%', left: '40%', zIndex:'+1'}}>
                   <UnoButton
                       width = "100%"
                       onClick={() =>{
@@ -356,7 +356,7 @@ class Game extends React.Component{
                       UNO
                   </UnoButton>
               </div>
-              <div style={{display: 'flex', position: 'absolute', top: '45%', left: '58%'}}>
+              <div style={{display: 'flex', position: 'absolute', top: '48%', left: '58%'}}>
             <img src= {Back}></img>
           </div>
           <div style={{display: 'flex',  justifyContent:'center', alignItems:'center', height: '100vh'}}>
@@ -372,6 +372,23 @@ class Game extends React.Component{
               )}
 
             </section>
+          </div>
+
+          <div style={{display: 'flex',  justifyContent:'center', alignItems:'center',position: 'absolute', top: '25%', left: '38%'}}>
+            {!this.opponentListId ? (
+                <Spinner />
+            ) : (
+                (this.opponentListId).map(i => (
+                    <div>
+                        <div style={{width: '200px', height: '60px'}}>
+                        <img src={require(`../../views/Images/Avatar/${i[0]}.png`).default} style={{height: '80px', width: '80px'}} alt={"Image not loaded"}/>
+                        </div>
+                        <br/>
+                        {i[1]} <br/>  Cards: {i[2]}
+            
+                    </div>
+                ))
+            )}
           </div>
 
       
