@@ -198,7 +198,6 @@ class Game extends React.Component{
 
         if(this.opponentListId){
             var j;
-            console.log(this.opponentListId);
             for (j = 0; j< (this.opponentListId.length); j++) {
                 if(this.opponentListId[j].slice(0,1)== String(this.userid)){
                     this.opponentListId.splice(j,1);
@@ -237,8 +236,10 @@ class Game extends React.Component{
             var color = str[0];
             var value = str[1];
             if (color == "Wild"){
-                this.playWildCard(card);
+                this.submit(card);
+
             }
+
             else{
                 const requestBody = JSON.stringify({
                     playerId: this.userid,
@@ -254,47 +255,60 @@ class Game extends React.Component{
         }
     }
 
-    async playWildCard(card){
-        if(this.currentplayer == this.userid) {
-            this.submit();
-            var str = card.split('/');
-            var color = str[0];
-            var value = str[1];
-            const requestBody = JSON.stringify({
-                playerId: this.userid,
-                color: color,
-                value: value,
-                wishedColor: this.state.wishedColor,
-            });
-            const response = await api.put("game/" + this.id + "/playerTurn", requestBody);
-            this.getHand();
-            this.fetchData();
-        }
+
+    async playWildCard(card, wishedColor){
+
+            if(this.currentplayer == this.userid) {
+
+                var str = card.split('/');
+                var color = str[0];
+                var value = str[1];
+
+
+                const requestBody = JSON.stringify({
+                    playerId: this.userid,
+                    color: color,
+                    value: value,
+                    wishedColor: wishedColor,
+                });
+
+                const response = await api.put("game/" + this.id + "/playerTurn", requestBody);
+                this.getHand();
+                this.fetchData();
+
+            }
+
+
+
+    }
+submit(card){{
+            confirmAlert({
+                title: 'Wish a color!',
+                buttons: [
+                    {
+                        label: 'Blue',
+                        onClick: () => this.playWildCard(card,"Blue")
+                    },
+                    {
+                        label: 'Red',
+                        onClick: () => this.playWildCard(card,"Red")
+                    },
+                    {
+                        label: 'Yellow',
+                        onClick: () => this.playWildCard(card,"Yellow")
+                    },
+                    {
+                        label: 'Green',
+                        onClick: () => this.playWildCard(card,"Green")
+                    }
+                ]
+            })
+
+
+        };
+
     }
 
-    submit = () => {
-        confirmAlert({
-            title: 'Wish a color!',
-            buttons: [
-                {
-                    label: 'Blue',
-                    onClick: () => this.setState({wishedColor : "Blue"})
-                },
-                {
-                    label: 'Red',
-                    onClick: () => this.setState({wishedColor : "Red"})
-                },
-                {
-                    label: 'Yellow',
-                    onClick: () => this.setState({wishedColor : "Yellow"})
-                },
-                {
-                    label: 'Green',
-                    onClick: () => this.setState({wishedColor : "Green"})
-                }
-            ]
-        })
-    };
 
     async getHand(){
       try {
@@ -376,9 +390,6 @@ class Game extends React.Component{
           <TitelContainer>
             <h2>Good Luck & Have Fun!</h2>
           </TitelContainer>
-            <div className="container">
-                <button onClick={this.submit}>Confirm dialog</button>
-            </div>
           <TitelContainer2>
               <h1>It's {this.currentplayerUN}'s turn!</h1>
           </TitelContainer2>
