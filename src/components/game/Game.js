@@ -15,6 +15,9 @@ import GameEntity from '../shared/models/GameEntity';
 import CurrentPlayer from '../shared/models/CurrentPlayer';
 import Back from '../../views/Images/CardDesigns/standard/Back.png';
 
+import { confirmAlert } from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css'
+
 const Users = styled.ul`
   list-style: none;
   padding-left: 0;
@@ -91,6 +94,7 @@ class Game extends React.Component{
             currentvalue: null,
             opponentListId:null,
             disabled : false,
+            wishedColor : null,
 
             
             // TODO eventuell noch gamedirection für frontend per getrequest holen
@@ -232,16 +236,66 @@ class Game extends React.Component{
             var str = card.split('/');
             var color = str[0];
             var value = str[1];
+            if (color == "Wild"){
+                this.playWildCard(card);
+            }
+            else{
+                const requestBody = JSON.stringify({
+                    playerId: this.userid,
+                    color: color,
+                    value: value,
+                    wishedColor : null,
+                });
+                const response = await api.put("game/" + this.id + "/playerTurn", requestBody);
+                this.getHand();
+                this.fetchData();
+            }
+
+        }
+    }
+
+    async playWildCard(card){
+        if(this.currentplayer == this.userid) {
+            this.submit();
+            var str = card.split('/');
+            var color = str[0];
+            var value = str[1];
             const requestBody = JSON.stringify({
                 playerId: this.userid,
                 color: color,
                 value: value,
+                wishedColor: this.state.wishedColor,
             });
             const response = await api.put("game/" + this.id + "/playerTurn", requestBody);
             this.getHand();
             this.fetchData();
         }
     }
+
+    submit = () => {
+        confirmAlert({
+            title: 'Wish a color!',
+            buttons: [
+                {
+                    label: 'Blue',
+                    onClick: () => this.setState({wishedColor : "Blue"})
+                },
+                {
+                    label: 'Red',
+                    onClick: () => this.setState({wishedColor : "Red"})
+                },
+                {
+                    label: 'Yellow',
+                    onClick: () => this.setState({wishedColor : "Yellow"})
+                },
+                {
+                    label: 'Green',
+                    onClick: () => this.setState({wishedColor : "Green"})
+                }
+            ]
+        })
+    };
+
     async getHand(){
       try {
       const response = await api.get(`users/${this.userid}/hands`);
@@ -322,6 +376,9 @@ class Game extends React.Component{
           <TitelContainer>
             <h2>Good Luck & Have Fun!</h2>
           </TitelContainer>
+            <div className="container">
+                <button onClick={this.submit}>Confirm dialog</button>
+            </div>
           <TitelContainer2>
               <h1>It's {this.currentplayerUN}'s turn!</h1>
           </TitelContainer2>
