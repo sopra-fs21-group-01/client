@@ -140,34 +140,6 @@ class Game extends React.Component{
         clearInterval(this.updateInterval)
     }
 
-    /** async componentDidMount(){
-
-    const gameId = localStorage.getItem('lobbyId');
-
-    // get players and starting hand
-    try {
-
-    const playerListResponse = await api.get("/game/"+gameId+"/kickOff");
-
-    this.setState({opponentList: playerListResponse.data})
-
-    }
-
-      // call every second
-      try { setInterval(async() => {
-
-
-
-          {
-
-          ;
-          }
-           }, 10000);}
-           catch (error) {
-                     alert(`Something went wrong when updating the game: \n${handleError(error)}`);
-                   }
-           } */
-
     async fetchData(){
         try{
             const response = await api.get("game/"+this.id+"/kickOff");
@@ -178,6 +150,8 @@ class Game extends React.Component{
             this.currentcolor = game.currentColor;
             this.currentvalue = game.currentValue;
             this.opponentListId = game.opponentListHands;
+
+
             
             this.getOpponentHands();
   
@@ -190,11 +164,14 @@ class Game extends React.Component{
         }
         //sets the draw card button to enabled
         if(this.currentplayer == this.userid){
-            this.setState({disabled: false});
+            this.setState({disabled: false},
+            );
         }
     }
 
-    getOpponentHands(){
+
+    // Also checks if an opponent won
+    async getOpponentHands(){
 
         if(this.opponentListId){
             var j;
@@ -212,9 +189,24 @@ class Game extends React.Component{
                 var nrOfCards = str[2];
                 opponentListNested.push([playerId,username,nrOfCards]);
 
+
+
                 if (nrOfCards == 0) {
-                  alert(username+ " has won!");
-                  this.props.history.push(`/game`);
+                  alert(username+ " finished the game!");
+
+                  // If its only two players left, than here it should either push ti lobby or waiting room
+
+                        if (localStorage.getItem('username') == this.host){
+                        try {
+                              await api.put(`lobbies/${this.id}/resets`);
+                         } catch(error){
+                         alert(`Something went wrong when trying to reset the lobby: \n${handleError(error)}`);
+                           }
+
+                        this.props.history.push('/game/lobby');}
+
+                       else { this.props.history.push('/game/waitingRoom');}
+
                   }
             }
             this.opponentListId =opponentListNested;
@@ -225,7 +217,6 @@ class Game extends React.Component{
     async deleteGame(){
         try{
             await api.delete("game/"+this.id+"/deletion");
-            await api.delete("lobbies/"+this.id+"");
         }catch(error){
             alert(`Something went wrong during the deletion of the game: \n${handleError(error)}`);
         }
@@ -309,7 +300,7 @@ submit(card){{
 
     }
 
-
+    // Also checks if the player won
     async getHand(){
       try {
       const response = await api.get(`users/${this.userid}/hands`);
@@ -321,9 +312,37 @@ submit(card){{
       var i;
       var cardarray = [];
       if (this.playerHand.length == 0) {
+
+
+      // this part has to be tried / caught
+      // probably export this code to another function because this gets overloaded
+      // -> could also move the whole if statement in the first try/catch block
+
         alert("Congratulations, you won!");
-        this.props.history.push(`/game`);
-        this.deleteGame();
+
+        console.log(" the host is" + this.host);
+        console.log(localStorage.getItem('username')== this.host);
+
+
+             // set the isInGame boolean of the Lobby to FALSE!
+             if (localStorage.getItem('username')== this.host){
+             try {
+                   await api.put(`lobbies/${this.id}/resets`);
+                   } catch(error){
+                     alert(`Something went wrong when trying to reset the lobby: \n${handleError(error)}`);
+                 }
+
+             this.props.history.push('/game/lobby');
+             this.deleteGame();}
+
+              else {this.props.history.push('/game/waitingRoom');
+              this.deleteGame();}
+
+      // implement here, that you are removed from the playerList in the Backend
+      // -> new PUT request, takes player ID and game ID
+
+      // If there are only two players, don't do the PUT request, instead push both to the lobby and delete the game
+
       }
       for (i = 0; i< (this.playerHand.length); i++) {
           var str = this.playerHand[i].split('/');
@@ -379,7 +398,7 @@ submit(card){{
 
     }
 
-    return() {
+    returnToMain() {
       this.props.history.push('/game/mainmenu');
     }
     render() {
@@ -411,7 +430,7 @@ submit(card){{
           <div style={{display: 'flex', position: 'absolute', top: '10%', left: '10%', zIndex:'+1'}}>
           <ReturnCircle 
             width="100%" 
-            onClick={() => {this.return()}}
+            onClick={() => {this.returnToMain()}}
           >
             Leave
           </ReturnCircle>
