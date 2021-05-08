@@ -13,7 +13,6 @@ import PlayerList from '../shared/models/PlayerList';
 import Hand from '../shared/models/Hand';
 import GameEntity from '../shared/models/GameEntity';
 import CurrentPlayer from '../shared/models/CurrentPlayer';
-import Back from '../../views/Images/CardDesigns/standard/Back.png';
 
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css'
@@ -100,7 +99,6 @@ class Game extends React.Component{
             wishedColor : null,  
             theme: null,
 
-            
             // TODO eventuell noch gamedirection für frontend per getrequest holen
         };
         this.userid = localStorage.getItem("id");
@@ -405,7 +403,6 @@ submit(card){{
       } else {
         this.theme = "standard";
       }
-      console.log(this.theme);
     }
 
     returnToMain() {
