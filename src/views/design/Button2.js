@@ -6,15 +6,15 @@ export const Button2 = styled.button`
   }
   padding: 6px;
   font-weight: 600;
-  font-size: 10px;
+  font-size: 15px;
   text-align: center;
   color: rgba(255, 255, 255, 0.8);
   width: ${props => props.width || null};
-  height: 25px;
+  height: 35px;
   border: none;
   border-radius: 5px;
   background: rgb(153, 47, 26);
   transition: all 0.3s ease;
-  margin-top: 20px;
+  margin-top: 10px;
 `;
 

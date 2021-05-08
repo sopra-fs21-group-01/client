@@ -16,15 +16,15 @@ const TitelContainer = styled.div`
   text-transform: uppercase;
   color: black;
   font-weight: bold;
-  font-size: 40px;
-  margin-bottom: -60px;
+  font-size: 60px;
+  margin-bottom: -90px;
 `;
 
 const TitelContainer2 = styled.div`
   font-family: "Monospace", sans-serif;
   color: black;
   font-weight: bold;
-  font-size: 20px;
+  font-size: 30px;
 `;
 
 

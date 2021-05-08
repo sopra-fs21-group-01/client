@@ -7,11 +7,11 @@ export const Button = styled.button`
   padding: 6px;
   font-weight: 900;
   text-transform: uppercase;
-  font-size: 13px;
+  font-size: 20px;
   text-align: center;
   color: rgba(255, 255, 255, 1);
   width: ${props => props.width || null};
-  height: 35px;
+  height: 50px;
   border: none;
   border-radius: 5px;
   cursor: ${props => (props.disabled ? "default" : "pointer")};

@@ -112,15 +112,12 @@ class Game extends React.Component{
 
         try {
             const response = await api.get(`lobbies/${this.id}`);
-
-
             // get opponents
             const opponentList = new PlayerList(response.data);
             var playerIndex = (opponentList.playerList).indexOf(localStorage.getItem('username'))
             opponentList.playerList.splice(playerIndex, 1); // remove main player
             this.setState({opponentList: (opponentList.playerList)});
             localStorage.setItem('opponentList', JSON.stringify(opponentList.playerList));
-
 
             // get player's hand
             this.getHand();
