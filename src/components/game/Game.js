@@ -97,13 +97,15 @@ class Game extends React.Component{
             currentvalue: null,
             opponentListId:null,
             disabled : false,
-            wishedColor : null,
+            wishedColor : null,  
+            theme: null,
 
             
             // TODO eventuell noch gamedirection für frontend per getrequest holen
         };
         this.userid = localStorage.getItem("id");
         this.id = localStorage.getItem("lobbyId");
+        this.theme = "standard";
     }
     
 
@@ -397,6 +399,14 @@ submit(card){{
         const response = await api.put("game/" + this.id + "/sayUno", requestBody);
 
     }
+    changeTheme() {
+      if (this.theme == "standard") {
+        this.theme = "dark";
+      } else {
+        this.theme = "standard";
+      }
+      console.log(this.theme);
+    }
 
     returnToMain() {
       this.props.history.push('/game/mainmenu');
@@ -425,13 +435,13 @@ submit(card){{
   
           <div style={{ backgroundImage: `url(${UnoTable}) `, backgroundRepeat: 'no-repeat', margin: '90px auto' , width: "100%"}}>
 
-          <div style={{display: 'flex', position: 'relative', top: '160px', left: '40%'}}>
+          <div style={{display: 'flex', position: 'relative', top: '160px', left: '42%'}}>
     
             {!this.currentcolor && !this.currentvalue ?(
                 <Spinner/>
                 ) : (
                 <div className="card">
-                    <img src={require(`../../views/Images/CardDesigns/standard/${this.currentcolor}/${this.currentvalue}.png`).default}/>
+                    <img src={require(`../../views/Images/CardDesigns/${this.theme}/${this.currentcolor}/${this.currentvalue}.png`).default}/>
                 </div>
             )
             }
@@ -458,7 +468,7 @@ submit(card){{
                   </UnoButton>
               </div>
               <div style={{display: 'flex', position: 'relative', top: '-100px', left: '70%'}}>
-            <img src= {Back}></img>
+            <img src= {require(`../../views/Images/CardDesigns/${this.theme}/Back.png`).default}></img>
           </div>
           <div style={{display: 'flex', position: 'relative', top: '-550px', left: '10%'}}>
             {!this.opponentListId ? (
@@ -483,7 +493,7 @@ submit(card){{
                 ) : (
                   (this.state.convertedHand).map(i => (
                       <div className="card-hghlght card">
-                      <img src={require(`../../views/Images/CardDesigns/standard/${i}.png`).default} onClick={async () => this.playCard(i)} alt={"Image not loaded"} />
+                      <img src={require(`../../views/Images/CardDesigns/${this.theme}/${i}.png`).default} onClick={async () => this.playCard(i)} alt={"Image not loaded"} />
                       </div>
                   ))
               )}
@@ -491,6 +501,17 @@ submit(card){{
             </section>
           </div>  
           </div>
+
+          <div style={{display: 'flex', position: 'relative', top: '-15px', left: '43%', zIndex:'+1'}}>
+                  <UnoButton
+                      width = "100%"
+                      onClick={() =>{
+                          this.changeTheme();
+
+                      }}>
+                      Change Theme
+                  </UnoButton>
+              </div>
 
  
         </Container>
