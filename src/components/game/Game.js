@@ -33,6 +33,9 @@ const PlayerContainer = styled.li`
 const Container2 = styled.div`
   display: flex;
   flex-direction: column;
+  position: relative;
+  height: 100vh;
+  width: 100%;
 `;
 
 const Container = styled(BaseContainer)`
@@ -412,10 +415,20 @@ submit(card){{
           <TitelContainer2>
               <h1>It's {this.currentplayerUN}'s turn!</h1>
           </TitelContainer2>
-  
-          <div style={{ backgroundImage: `url(${UnoTable}) `, backgroundRepeat: 'no-repeat', margin: '140px auto' , width: "107%"}}>
 
-          <div style={{display: 'flex', position: 'absolute', top: '48%', left: '48%'}}>
+          <div style={{display: 'flex', position: 'relative', top: '-162px', left: '-30%'}}>
+          <ReturnCircle  
+            width="10%" 
+            onClick={() => {this.returnToMain()}}
+          >
+            Leave
+          </ReturnCircle>
+
+          </div>
+  
+          <div style={{ backgroundImage: `url(${UnoTable}) `, backgroundRepeat: 'no-repeat', margin: '90px auto' , width: "100%"}}>
+
+          <div style={{display: 'flex', position: 'relative', top: '160px', left: '40%'}}>
     
             {!this.currentcolor && !this.currentvalue ?(
                 <Spinner/>
@@ -426,16 +439,7 @@ submit(card){{
             )
             }
           </div>   
-
-          <div style={{display: 'flex', position: 'absolute', top: '10%', left: '10%', zIndex:'+1'}}>
-          <ReturnCircle 
-            width="100%" 
-            onClick={() => {this.returnToMain()}}
-          >
-            Leave
-          </ReturnCircle>
-          </div>
-          <div style={{display: 'flex', position: 'absolute', top: '63%', left: '58.7%', zIndex:'+1'}}>
+          <div style={{display: 'flex', position: 'relative', top: '180px', left: '72%', zIndex:'+1'}}>
             <Button4
                 disabled={this.currentplayer != this.userid || this.state.disabled}
                 onClick={() =>{
@@ -446,7 +450,7 @@ submit(card){{
             draw card
             </Button4>
             </div>
-              <div style={{display: 'flex', position: 'absolute', top: '53%', left: '40%', zIndex:'+1'}}>
+              <div style={{display: 'flex', position: 'relative', top: '30px', left: '15%', zIndex:'+1'}}>
                   <UnoButton
                       width = "100%"
                       onClick={() =>{
@@ -456,25 +460,10 @@ submit(card){{
                       UNO
                   </UnoButton>
               </div>
-              <div style={{display: 'flex', position: 'absolute', top: '48%', left: '58%'}}>
+              <div style={{display: 'flex', position: 'relative', top: '-100px', left: '70%'}}>
             <img src= {Back}></img>
           </div>
-          <div style={{display: 'flex',  justifyContent:'center', alignItems:'center', height: '100vh'}}>
-            <section className="content card">
-              {!this.state.convertedHand ? (
-                <Spinner />
-                ) : (
-                  (this.state.convertedHand).map(i => (
-                      <div className="card-hghlght card">
-                      <img src={require(`../../views/Images/CardDesigns/standard/${i}.png`).default} onClick={async () => this.playCard(i)} alt={"Image not loaded"} />
-                      </div>
-                  ))
-              )}
-
-            </section>
-          </div>
-
-          <div style={{display: 'flex',  justifyContent:'center', alignItems:'center',position: 'absolute', top: '25%', left: '38%'}}>
+          <div style={{display: 'flex', position: 'relative', top: '-550px', left: '10%'}}>
             {!this.opponentListId ? (
                 <Spinner />
             ) : (
@@ -490,9 +479,20 @@ submit(card){{
                 ))
             )}
           </div>
+          <div style={{display: 'flex',  justifyContent:'center', alignItems:'center', height: '10vh'}}>
+            <section className="content card">
+              {!this.state.convertedHand ? (
+                <Spinner />
+                ) : (
+                  (this.state.convertedHand).map(i => (
+                      <div className="card-hghlght card">
+                      <img src={require(`../../views/Images/CardDesigns/standard/${i}.png`).default} onClick={async () => this.playCard(i)} alt={"Image not loaded"} />
+                      </div>
+                  ))
+              )}
 
-      
-               
+            </section>
+          </div>  
           </div>
 
  

@@ -13,6 +13,10 @@ body {
   background: #F6F2E9;
 }
 
+html, body {
+  height: 100%;
+}
+
 input,
 textarea,
 select,
