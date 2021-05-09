@@ -6,6 +6,7 @@ import { Button4 } from '../../views/design/Button4';
 import { ReturnCircle } from '../../views/design/ReturnCircle';
 import { UnoButton } from '../../views/design/UnoButton';
 import '../../views/design/Card.css';
+import '../../views/design/ChatBox.css';
 import { withRouter } from 'react-router-dom';
 import { Spinner } from '../../views/design/Spinner';
 import UnoTable from '../../views/Images/UnoTable.png';
@@ -16,6 +17,7 @@ import CurrentPlayer from '../shared/models/CurrentPlayer';
 
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css'
+import ChatEntity from "../shared/models/ChatEntity";
 
 const Users = styled.ul`
   list-style: none;
@@ -98,6 +100,7 @@ class Game extends React.Component{
             disabled : false,
             wishedColor : null,  
             theme: null,
+            textChat:null
 
             // TODO eventuell noch gamedirection für frontend per getrequest holen
         };
@@ -168,6 +171,30 @@ class Game extends React.Component{
             );
         }
     }
+
+    async getChatData(){
+        try{
+            const response = await api.get("chat/"+this.id);
+            const chat = new ChatEntity(response.data);
+            this.textChat = chat.message;
+            // when using this.textChat use map function
+        }catch(error){
+            alert(`Something went wrong during the fetch of the Chat data: \n${handleError(error)}`);
+        }
+    }
+    async sendChatData(message){
+        try{
+            const requestBody = JSON.stringify({
+                message: message,
+                id: this.id
+            });
+            const response = await api.post("chat/"+this.id, requestBody);
+        }catch(error){
+            alert(`Something went wrong during the post request of sendChatData: \n${handleError(error)}`);
+        }
+
+    }
+
 
 
     // Also checks if an opponent won
@@ -508,12 +535,44 @@ submit(card){{
                       }}>
                       Change Theme
                   </UnoButton>
-              </div>
+          </div>
+            <section className="chatbox">
+                <section className="chat-window">
+                    <article className="msg-container msg-remote" id="msg-0">
+                        <div className="msg-box">
+                            <img class="user-img" src={require(`../../views/Images/Avatar/0.png`).default}/>
+                            <div className="flr">
+                                <div className="messages">
+                                    <p className="msg" id="msg-0">
+                                        Dies ist eine Beispielsnachricht
+                                    </p>
+                                </div>
+                                <span className="timestamp"><span className="username">Bernhard</span>•<span
+                                    className="posttime">3 minutes ago</span></span>
+                            </div>
+                        </div>
+                    </article>
+                </section>
+                <form className="chat-input" onSubmit="return false;">
+                    <input type="text" autoComplete="on" placeholder="Type a message"/>
+                    <button>
+                        <svg style={{width: '24px', height: '24px'}} viewBox="0 0 24 24">
+                            <path fill="rgba(0,0,0,.38)"
+                                  d="M17,12L12,17V14H8V10H12V7L17,12M21,16.5C21,16.88 20.79,17.21 20.47,17.38L12.57,21.82C12.41,21.94 12.21,22 12,22C11.79,22 11.59,21.94 11.43,21.82L3.53,17.38C3.21,17.21 3,16.88 3,16.5V7.5C3,7.12 3.21,6.79 3.53,6.62L11.43,2.18C11.59,2.06 11.79,2 12,2C12.21,2 12.41,2.06 12.57,2.18L20.47,6.62C20.79,6.79 21,7.12 21,7.5V16.5M12,4.15L5,8.09V15.91L12,19.85L19,15.91V8.09L12,4.15Z"/>
+                        </svg>
+                        onClick={() =>{
+                        this.sendChatData(text);
 
+                        }}>
+
+                    </button>
+                </form>
+            </section>
  
         </Container>
       </Container2>
       )
+
     }
 
 
