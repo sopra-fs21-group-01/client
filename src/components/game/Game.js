@@ -1,21 +1,21 @@
 import React from 'react';
 import styled from 'styled-components';
-import { BaseContainer } from '../../helpers/layout';
-import { api, handleError } from '../../helpers/api';
-import { Button4 } from '../../views/design/Button4';
-import { ReturnCircle } from '../../views/design/ReturnCircle';
-import { UnoButton } from '../../views/design/UnoButton';
+import {BaseContainer} from '../../helpers/layout';
+import {api, handleError} from '../../helpers/api';
+import {Button4} from '../../views/design/Button4';
+import {ReturnCircle} from '../../views/design/ReturnCircle';
+import {UnoButton} from '../../views/design/UnoButton';
 import '../../views/design/Card.css';
 import '../../views/design/ChatBox.css';
-import { withRouter } from 'react-router-dom';
-import { Spinner } from '../../views/design/Spinner';
+import {withRouter} from 'react-router-dom';
+import {Spinner} from '../../views/design/Spinner';
 import UnoTable from '../../views/Images/UnoTable.png';
 import PlayerList from '../shared/models/PlayerList';
 import Hand from '../shared/models/Hand';
 import GameEntity from '../shared/models/GameEntity';
 import CurrentPlayer from '../shared/models/CurrentPlayer';
 
-import { confirmAlert } from 'react-confirm-alert';
+import {confirmAlert} from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css'
 import ChatEntity from "../shared/models/ChatEntity";
 
@@ -100,9 +100,10 @@ class Game extends React.Component{
             disabled : false,
             wishedColor : null,  
             theme: null,
-            textChat:null
+            textChat:null,
+            text:null
 
-            // TODO eventuell noch gamedirection für frontend per getrequest holen
+
         };
         this.userid = localStorage.getItem("id");
         this.id = localStorage.getItem("lobbyId");
@@ -174,25 +175,39 @@ class Game extends React.Component{
 
     async getChatData(){
         try{
-            const response = await api.get("chat/"+this.id);
-            const chat = new ChatEntity(response.data);
-            this.textChat = chat.message;
-            // when using this.textChat use map function
+            const response = await api.get("chats/"+this.id);
+            this.textChat = new ChatEntity(response.data);
+
         }catch(error){
             alert(`Something went wrong during the fetch of the Chat data: \n${handleError(error)}`);
         }
     }
-    async sendChatData(message){
+    async sendChatData(){
+        const username = this.getUsername();
+        const message = username + this.text;
+        const d = new Date();
+        const time = d.toLocaleTimeString();
         try{
             const requestBody = JSON.stringify({
                 message: message,
-                id: this.id
+                id: this.id,
+                timestamp: time,
+
             });
-            const response = await api.post("chat/"+this.id, requestBody);
+            const response = await api.post("chats/"+this.id, requestBody);
         }catch(error){
             alert(`Something went wrong during the post request of sendChatData: \n${handleError(error)}`);
         }
-
+    }
+    getUsername() {
+        var i;
+        for (i = 0; i < (this.opponentListId.length); i++) {
+            if (this.opponentListId[i].slice(0, 1) == String(this.userid)) {
+                var str = this.opponentListId[i].split(',');
+                var username = str[1];
+            }
+        }
+        return username;
     }
 
 
@@ -221,7 +236,7 @@ class Game extends React.Component{
                 if (nrOfCards == 0) {
                   alert(username+ " finished the game!");
 
-                  // If its only two players left, than here it should either push ti lobby or waiting room
+                  // If its only two players left, than here it should either push to the lobby or waiting room
 
                         if (localStorage.getItem('username') == this.host){
                         try {
@@ -435,6 +450,19 @@ submit(card){{
     returnToMain() {
       this.props.history.push('/game/mainmenu');
     }
+
+    getUsernameFromChat(text){
+        var str = text.split('/');
+        return str[0];
+
+    }
+    getMessageFromChat(text){
+        var str = text.split('/');
+        return str[1];
+    }
+    handleInputChange(key, value) {
+        this.setState({ [key]: value });
+    }
     render() {
       return (
       <Container2>
@@ -539,29 +567,39 @@ submit(card){{
             <section className="chatbox">
                 <section className="chat-window">
                     <article className="msg-container msg-remote" id="msg-0">
-                        <div className="msg-box">
-                            <img class="user-img" src={require(`../../views/Images/Avatar/0.png`).default}/>
-                            <div className="flr">
-                                <div className="messages">
-                                    <p className="msg" id="msg-0">
-                                        Dies ist eine Beispielsnachricht
-                                    </p>
-                                </div>
-                                <span className="timestamp"><span className="username">Bernhard</span>•<span
-                                    className="posttime">3 minutes ago</span></span>
-                            </div>
-                        </div>
+                            {!this.state.textChat ? (
+                                <Spinner />
+                            ) : (
+                                (this.state.textChat).map(chat => {
+                                    return(
+                                    <div className="msg-box">
+                                        <img className="user-img"
+                                             src={require(`../../views/Images/Avatar/0.png`).default}/>
+                                        <div className="flr">
+                                            <div className="messages">
+                                                <p className="msg" id="msg-0">
+                                                    {this.getMessageFromChat(chat.message)}
+                                                </p>
+                                                <span className="timestamp"><span
+                                                    className="username">{this.getUsernameFromChat(chat.message)}</span>•<span
+                                                    className="posttime">{chat.timestamp}</span></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    )})
+                            )}
                     </article>
                 </section>
                 <form className="chat-input" onSubmit="return false;">
-                    <input type="text" autoComplete="on" placeholder="Type a message"/>
+                    <input type="text" autoComplete="on" placeholder="Type a message" onChange={event =>
+                    {this.handleInputChange('text', event.target.value)}}/>
                     <button>
                         <svg style={{width: '24px', height: '24px'}} viewBox="0 0 24 24">
                             <path fill="rgba(0,0,0,.38)"
                                   d="M17,12L12,17V14H8V10H12V7L17,12M21,16.5C21,16.88 20.79,17.21 20.47,17.38L12.57,21.82C12.41,21.94 12.21,22 12,22C11.79,22 11.59,21.94 11.43,21.82L3.53,17.38C3.21,17.21 3,16.88 3,16.5V7.5C3,7.12 3.21,6.79 3.53,6.62L11.43,2.18C11.59,2.06 11.79,2 12,2C12.21,2 12.41,2.06 12.57,2.18L20.47,6.62C20.79,6.79 21,7.12 21,7.5V16.5M12,4.15L5,8.09V15.91L12,19.85L19,15.91V8.09L12,4.15Z"/>
                         </svg>
                         onClick={() =>{
-                        this.sendChatData(text);
+                        this.sendChatData();
 
                         }}>
 

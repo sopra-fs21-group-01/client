@@ -64,7 +64,7 @@ class Lobby extends React.Component {
             this.props.history.push('/game/running')
             }
     }
-        catch (error) {
+            catch (error) {
                   alert(`Something went wrong when asking if game is started: \n${handleError(error)}`);
                 }
         }
