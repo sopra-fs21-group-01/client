@@ -182,6 +182,9 @@ class Game extends React.Component{
             alert(`Something went wrong during the fetch of the Chat data: \n${handleError(error)}`);
         }
     }
+
+
+
     async sendChatData(){
         const username = this.getUsername();
         const message = username + this.text;
@@ -229,7 +232,8 @@ class Game extends React.Component{
                 var playerId = str[0];
                 var username = str[1];
                 var nrOfCards = str[2];
-                opponentListNested.push([playerId,username,nrOfCards]);
+                var unoStatus = str[3]
+                opponentListNested.push([playerId,username,nrOfCards,unoStatus]);
 
 
 
@@ -532,8 +536,8 @@ submit(card){{
                         <img src={require(`../../views/Images/Avatar/${i[0]%14}.png`).default} style={{height: '80px', width: '80px'}} alt={"Image not loaded"}/>
                         </div>
                         <br/>
-                        {i[1]} <br/>  Cards: {i[2]}
-            
+                        {i[1]} <br/>  Cards: {i[2]} <br/> UNO: {i[3]}
+
                     </div>
                 ))
             )}
