@@ -187,17 +187,17 @@ class Game extends React.Component{
 
     async sendChatData(){
         const username = this.getUsername();
-        const message = username + this.text;
+        const message = username + "/" + this.text;
         const d = new Date();
         const time = d.toLocaleTimeString();
         try{
             const requestBody = JSON.stringify({
                 message: message,
-                id: this.id,
+                lobbyId: this.id,
                 timestamp: time,
 
             });
-            const response = await api.post("chats/"+this.id, requestBody);
+            const response = await api.post("/chats", requestBody);
         }catch(error){
             alert(`Something went wrong during the post request of sendChatData: \n${handleError(error)}`);
         }

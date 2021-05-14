@@ -97,6 +97,16 @@ class Lobby extends React.Component {
 
       const lobbyId = localStorage.getItem('lobbyId');
       await api.post("/game/"+lobbyId+"/kickOff", requestBody)
+          const d = new Date();
+          const time = d.toLocaleTimeString();
+          const message = "NPC/Welcome to the game"
+          const requestBody2 = JSON.stringify({
+              message: message,
+              lobbyId: localStorage.getItem('lobbyId'),
+              timestamp: time,
+
+          });
+      await api.post("/chats", requestBody2);
           this.props.history.push('/game/running')
       }catch (error){
           alert(`Something went wrong during the creation of the game: \n${handleError(error)}`);
