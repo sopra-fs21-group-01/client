@@ -569,7 +569,7 @@ submit(card){{
                   </UnoButton>
           </div>
 
-          <div style={{display: 'flex', position: 'relative', top: '-30%', left: '-100%'}}>
+          <div style={{display: 'flex', position: 'relative', top: '-47%', left: '110%'}}>
             <section className="chatbox">
                 <section className="chat-window">
                     <article className="msg-container msg-remote" id="msg-0">

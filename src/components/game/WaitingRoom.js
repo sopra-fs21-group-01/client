@@ -66,13 +66,16 @@ class WaitingRoom extends React.Component {
      }
          catch (error) {
                    alert(`Something went wrong when asking if game is started: \n${handleError(error)}`);
+                   this.props.history.push('/game/mainmenu')
                  }
          }
    componentWillUnmount(){
    clearInterval(this.updateInterval)
    }
 
-  
+   returnToMain() {
+    this.props.history.push('/game/mainmenu');
+  }
 
   render() {
  
@@ -96,6 +99,14 @@ class WaitingRoom extends React.Component {
         )}
       
         </Container>
+        <ButtonContainer>
+          <Button2 
+            width="20%" 
+            onClick={() => {this.returnToMain()}}
+          >
+            Return
+          </Button2>
+        </ButtonContainer>
       </Container2>
     )
   }

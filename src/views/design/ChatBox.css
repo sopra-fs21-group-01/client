@@ -32,7 +32,7 @@ body {
 .chat-window {
     flex: auto;
     max-height: calc(100% - 60px);
-    background: #ffffff;
+    background: #ffffff83;
     overflow: auto;
 }
 .chat-input {
@@ -52,7 +52,7 @@ body {
     text-indent: 10px;
     font-size: 12pt;
     padding: 0;
-    background: #dbdbdb;
+    background: #F6F2E9;
 }
 .chat-input button {
     float: right;
