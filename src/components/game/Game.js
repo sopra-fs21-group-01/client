@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import {BaseContainer} from '../../helpers/layout';
 import {api, handleError} from '../../helpers/api';
+import {Button} from '../../views/design/Button';
 import {Button4} from '../../views/design/Button4';
 import {ReturnCircle} from '../../views/design/ReturnCircle';
 import {UnoButton} from '../../views/design/UnoButton';
@@ -14,10 +15,29 @@ import PlayerList from '../shared/models/PlayerList';
 import Hand from '../shared/models/Hand';
 import GameEntity from '../shared/models/GameEntity';
 import CurrentPlayer from '../shared/models/CurrentPlayer';
-
 import {confirmAlert} from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css'
 import ChatEntity from "../shared/models/ChatEntity";
+import 'emoji-mart/css/emoji-mart.css';
+import { Picker } from 'emoji-mart';
+
+const styles = {
+    
+    getEmojiButton: {
+      cssFloat: "right",
+      border: "none",
+      margin: 0,
+      cursor: "pointer"
+    },
+    emojiPicker: {
+      position: "absolute",
+      bottom: 60,
+      right: 30,
+      cssFloat: "right",
+      marginLeft: "200px"
+    }
+  };
+
 
 const Users = styled.ul`
   list-style: none;
@@ -101,8 +121,9 @@ class Game extends React.Component{
             wishedColor : null,  
             theme: null,
             textChat:null,
-            text:null
-
+            text:null,
+            showEmojis: false,
+            errors: []
 
         };
         this.userid = localStorage.getItem("id");
@@ -473,14 +494,54 @@ submit(card){{
     handleInputChange(key, value) {
         this.setState({ [key]: value });
     }
+
+    addEmoji = e => {
+        let emoji = e.native;
+        if (this.state.text != null) {
+          this.setState({
+            text: this.state.text + emoji
+          });
+        }
+        else {
+              this.setState({
+            text: emoji
+          });
+        }
+      };
+
+    displayEmojis() {
+      console.log(this.state.showEmojis);
+      if (this.state.showEmojis == false) {
+        this.state.showEmojis = true;
+      } else {
+        this.state.showEmojis = false;
+      }
+    }
+
+    closeMenu = e => {
+      console.log(this.emojiPicker);
+      if (this.emojiPicker !== null && !this.emojiPicker.contains(e.target)) {
+        this.setState(
+          {
+            showEmojis: false
+          },
+          () => document.removeEventListener("click", this.closeMenu)
+        );
+      }
+    };
+  
+
+      
     render() {
+      let errors = this.state.errors.map(err => <p>{err}</p>);
+
       return (
       <Container2>
         <Container>
-
           <TitelContainer>
             <h2>Good Luck & Have Fun!</h2>
           </TitelContainer>
+        
           <TitelContainer2>
               <h1>It's {this.currentplayerUN}'s turn!</h1>
           </TitelContainer2>
@@ -602,32 +663,60 @@ submit(card){{
                             )}
                     </article>
                 </section>
-                <form className="chat-input" onSubmit="return false;">
-                    <input type="text" autoComplete="on" placeholder="Type a message" onChange={event =>
+                <form className="chat-input" onSubmit={this.sendChatData}>
+                    <input 
+                      type="text"
+                      value={this.state.text}
+                      placeholder="Type a message"  
+                      onChange={event =>
                     {this.handleInputChange('text', event.target.value)}}/>
-                    <button
+                    
+                    <button 
                     onClick={() =>{
                         this.sendChatData();
-
                         }}>
                     
                         <svg style={{width: '24px', height: '24px'}} viewBox="0 0 24 24">
                             <path fill="rgba(0,0,0,.38)"
                                   d="M17,12L12,17V14H8V10H12V7L17,12M21,16.5C21,16.88 20.79,17.21 20.47,17.38L12.57,21.82C12.41,21.94 12.21,22 12,22C11.79,22 11.59,21.94 11.43,21.82L3.53,17.38C3.21,17.21 3,16.88 3,16.5V7.5C3,7.12 3.21,6.79 3.53,6.62L11.43,2.18C11.59,2.06 11.79,2 12,2C12.21,2 12.41,2.06 12.57,2.18L20.47,6.62C20.79,6.79 21,7.12 21,7.5V16.5M12,4.15L5,8.09V15.91L12,19.85L19,15.91V8.09L12,4.15Z"/>
                         </svg>
-                        
-
                     </button>
                 </form>
             </section>
-            </div>               
+                <div  style={{ color: "red", zIndex:'+1'}}>{errors}</div>
+                    {this.state.showEmojis ? (
+                    <span style={styles.emojiPicker} ref={el => (this.emojiPicker = el)}>
+                        <Picker
+                            onSelect={this.addEmoji}
+                            emojiTooltip={true}
+                            title="emoji"
+                        />
+                    </span>
+                    ) : (
+                    <div style={{position: 'relative', top: '360px', right: '100px', zIndex: '+1'}}>
+                    <p  
+                      style={styles.getEmojiButton} 
+                      onClick={() =>{
+                        this.displayEmojis()}}>
+
+                      {String.fromCodePoint(0x1f60a)}
+                      
+                    </p>
+                    </div>
+                    )}
+                    <div style={{position: 'relative', top: '360px', right: '122px' }}>
+                     <p style={styles.getEmojiButton} 
+                      onClick={() =>{
+                        this.displayEmojis()}}>
+                      {String.fromCodePoint(0x1f60a)}
+                    </p>
+                    </div>
+                </div>     
+
         </Container>
       </Container2>
-      )
-
+      );
     }
-
-
 }
 
 export default withRouter(Game)

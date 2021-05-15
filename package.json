@@ -4,10 +4,14 @@
   "private": true,
   "dependencies": {
     "axios": "^0.21.1",
+    "babel-runtime": "^6.26.0",
+    "emoji-mart": "^3.0.1",
+    "emojionearea": "^3.0.0",
     "react": "^17.0.2",
     "react-bootstrap": "^1.5.2",
     "react-confirm-alert": "^2.7.0",
     "react-dom": "^17.0.1",
+    "react-helmet": "^6.1.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "^4.0.2",
     "styled-components": "^5.2.1"

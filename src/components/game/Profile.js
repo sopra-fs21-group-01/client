@@ -105,16 +105,6 @@ class Profile extends React.Component {
                       </Button>                    
                     </ButtonContainer>
                     <ButtonContainer>
-                      <Button
-                        width="30%"
-                        onClick={() => {
-                            this.changeTheme();
-                        }}
-                        >
-                        Change Theme
-                      </Button>                    
-                    </ButtonContainer>
-                    <ButtonContainer>
                       <Button2 
                         width="20%" 
                         onClick={() => {this.return()}}
