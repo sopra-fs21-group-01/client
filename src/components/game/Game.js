@@ -436,11 +436,17 @@ submit(card){{
     }
 
     async sayUno() {
-        const requestBody = JSON.stringify({
-            playerId: this.userid,
-        });
+        if (this.playerHand.length == 1){
+            const requestBody = JSON.stringify({
+                playerId: this.userid,
+            });
 
-        const response = await api.put("game/" + this.id + "/sayUno", requestBody);
+            const response = await api.put("game/" + this.id + "/sayUno", requestBody);
+        } else{
+            alert("Liar!");
+        }
+
+
 
     }
     changeTheme() {
