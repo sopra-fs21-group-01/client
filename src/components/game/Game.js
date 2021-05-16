@@ -22,7 +22,7 @@ import 'emoji-mart/css/emoji-mart.css';
 import { Picker } from 'emoji-mart';
 
 const styles = {
-    
+
     getEmojiButton: {
       cssFloat: "right",
       border: "none",
@@ -104,7 +104,7 @@ class Game extends React.Component{
     constructor() {
         super();
         this.state = {
-            opponentList: null,
+
             playerHand: null,
             id: null,
             gamemode: null,
@@ -123,8 +123,9 @@ class Game extends React.Component{
             textChat:null,
             text:null,
             showEmojis: false,
-            errors: []
-
+            errors: [],
+            text:null,
+            hasWon: false
         };
         this.userid = localStorage.getItem("id");
         this.id = localStorage.getItem("lobbyId");
@@ -138,14 +139,11 @@ class Game extends React.Component{
         try {
             const response = await api.get(`lobbies/${this.id}`);
             // get opponents
-            const opponentList = new PlayerList(response.data);
-            var playerIndex = (opponentList.playerList).indexOf(localStorage.getItem('username'))
-            opponentList.playerList.splice(playerIndex, 1); // remove main player
-            this.setState({opponentList: (opponentList.playerList)});
-            localStorage.setItem('opponentList', JSON.stringify(opponentList.playerList));
 
-            // get player's hand
-            this.getHand();
+
+            // get player's hand if he has not won yet
+            if (!this.state.hasWon){
+            this.getHand();}
             this.fetchData();
         }  catch (error) {
             alert(`Something went wrong while fetching the users: \n${handleError(error)}`);
@@ -153,7 +151,8 @@ class Game extends React.Component{
     }
     async checkStatus(){
         try {
-            this.getHand();
+             if (!this.state.hasWon){
+                this.getHand();}
             this.fetchData(); 
 
         }
@@ -176,8 +175,6 @@ class Game extends React.Component{
             this.currentvalue = game.currentValue;
             this.opponentListId = game.opponentListHands;
 
-
-            
             this.getOpponentHands();
   
             const response2 =  await api.get("users/"+this.currentplayer+"");
@@ -203,9 +200,6 @@ class Game extends React.Component{
             alert(`Something went wrong during the fetch of the Chat data: \n${handleError(error)}`);
         }
     }
-
-
-
     async sendChatData(){
         const username = this.getUsername();
         const message = username + "/" + this.text;
@@ -256,9 +250,7 @@ class Game extends React.Component{
                 var unoStatus = str[3]
                 opponentListNested.push([playerId,username,nrOfCards,unoStatus]);
 
-
-
-                if (nrOfCards == 0) {
+               /** if (nrOfCards == 0) {
                   alert(username+ " finished the game!");
 
                   // If its only two players left, than here it should either push to the lobby or waiting room
@@ -273,8 +265,7 @@ class Game extends React.Component{
                         this.props.history.push('/game/lobby');}
 
                        else { this.props.history.push('/game/waitingRoom');}
-
-                  }
+                  } */
             }
             this.opponentListId =opponentListNested;
         }
@@ -380,30 +371,23 @@ submit(card){{
       var cardarray = [];
       if (this.playerHand.length == 0) {
 
-
-      // this part has to be tried / caught
-      // probably export this code to another function because this gets overloaded
-      // -> could also move the whole if statement in the first try/catch block
-
         alert("Congratulations, you won!");
+         this.setState({hasWon: true})
+        /**  const requestBody = JSON.stringify({
+          playerId: this.userid,
+          });
+           try{
+          const response = await api.put("game/"+this.id+"/wins", requestBody);
 
-        console.log(" the host is" + this.host);
-        console.log(localStorage.getItem('username')== this.host);
+          }catch(error){
+          alert(`Something went wrong during the fetch of the Chat data: \n${handleError(error)}`);
+          }
+          */
 
 
              // set the isInGame boolean of the Lobby to FALSE!
-             if (localStorage.getItem('username')== this.host){
-             try {
-                   await api.put(`lobbies/${this.id}/resets`);
-                   } catch(error){
-                     alert(`Something went wrong when trying to reset the lobby: \n${handleError(error)}`);
-                 }
 
-             this.props.history.push('/game/lobby');
-             this.deleteGame();}
 
-              else {this.props.history.push('/game/waitingRoom');
-              this.deleteGame();}
 
       // implement here, that you are removed from the playerList in the Backend
       // -> new PUT request, takes player ID and game ID
@@ -529,9 +513,9 @@ submit(card){{
         );
       }
     };
-  
 
-      
+
+
     render() {
       let errors = this.state.errors.map(err => <p>{err}</p>);
 
@@ -541,7 +525,7 @@ submit(card){{
           <TitelContainer>
             <h2>Good Luck & Have Fun!</h2>
           </TitelContainer>
-        
+
           <TitelContainer2>
               <h1>It's {this.currentplayerUN}'s turn!</h1>
           </TitelContainer2>
@@ -664,18 +648,18 @@ submit(card){{
                     </article>
                 </section>
                 <form className="chat-input" onSubmit={this.sendChatData}>
-                    <input 
+                    <input
                       type="text"
                       value={this.state.text}
-                      placeholder="Type a message"  
+                      placeholder="Type a message"
                       onChange={event =>
                     {this.handleInputChange('text', event.target.value)}}/>
-                    
-                    <button 
+
+                    <button
                     onClick={() =>{
                         this.sendChatData();
                         }}>
-                    
+
                         <svg style={{width: '24px', height: '24px'}} viewBox="0 0 24 24">
                             <path fill="rgba(0,0,0,.38)"
                                   d="M17,12L12,17V14H8V10H12V7L17,12M21,16.5C21,16.88 20.79,17.21 20.47,17.38L12.57,21.82C12.41,21.94 12.21,22 12,22C11.79,22 11.59,21.94 11.43,21.82L3.53,17.38C3.21,17.21 3,16.88 3,16.5V7.5C3,7.12 3.21,6.79 3.53,6.62L11.43,2.18C11.59,2.06 11.79,2 12,2C12.21,2 12.41,2.06 12.57,2.18L20.47,6.62C20.79,6.79 21,7.12 21,7.5V16.5M12,4.15L5,8.09V15.91L12,19.85L19,15.91V8.09L12,4.15Z"/>
@@ -694,24 +678,24 @@ submit(card){{
                     </span>
                     ) : (
                     <div style={{position: 'relative', top: '360px', right: '100px', zIndex: '+1'}}>
-                    <p  
-                      style={styles.getEmojiButton} 
+                    <p
+                      style={styles.getEmojiButton}
                       onClick={() =>{
                         this.displayEmojis()}}>
 
                       {String.fromCodePoint(0x1f60a)}
-                      
+
                     </p>
                     </div>
                     )}
                     <div style={{position: 'relative', top: '360px', right: '122px' }}>
-                     <p style={styles.getEmojiButton} 
+                     <p style={styles.getEmojiButton}
                       onClick={() =>{
                         this.displayEmojis()}}>
                       {String.fromCodePoint(0x1f60a)}
                     </p>
                     </div>
-                </div>     
+                </div>
 
         </Container>
       </Container2>
