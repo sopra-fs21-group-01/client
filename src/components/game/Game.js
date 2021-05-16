@@ -230,6 +230,8 @@ class Game extends React.Component{
 
 
 
+
+
     // Also checks if an opponent won
     async getOpponentHands(){
 
@@ -450,9 +452,6 @@ submit(card){{
         } else{
             alert("Liar!");
         }
-
-
-
     }
     changeTheme() {
       if (this.theme == "standard") {
@@ -465,6 +464,27 @@ submit(card){{
     returnToMain() {
       this.props.history.push('/game/mainmenu');
     }
+
+
+
+    async checkIfGameFinished(){
+         if (this.opponentListId.size() == 0){
+
+             if (localStorage.getItem('username') == this.host){
+                try {
+                    await api.put('lobbies/${this.id}/resets');
+                }catch(error){
+                    alert(`Something went wrong when trying to reset the lobby: \n${handleError(error)}`);
+                }
+                setTimeout(this.props.history.push('/game/lobby'), 2000);
+              }else{
+                setTimeout(this.props.history.push('/game/waitingRoom'), 1000);
+
+              }
+        }
+    }
+
+    async resetLobby()
 
     getUsernameFromChat(text){
         var str = text.split('/');
