@@ -124,7 +124,6 @@ class Game extends React.Component{
             text:null,
             showEmojis: false,
             errors: [],
-            text:null,
             hasWon: false
         };
         this.userid = localStorage.getItem("id");
@@ -152,8 +151,11 @@ class Game extends React.Component{
     async checkStatus(){
         try {
              if (!this.state.hasWon){
-                this.getHand();}
-            this.fetchData(); 
+                this.getHand();
+             }
+
+            this.fetchData();
+            this.checkIfGameFinished();
 
         }
         catch (error) {
@@ -373,7 +375,7 @@ submit(card){{
       var cardarray = [];
       if (this.playerHand.length == 0) {
 
-        alert("Congratulations, you won!");
+        //alert("Congratulations, you won!");
          this.setState({hasWon: true})
         /**  const requestBody = JSON.stringify({
           playerId: this.userid,
@@ -467,24 +469,33 @@ submit(card){{
 
 
 
-    async checkIfGameFinished(){
-         if (this.opponentListId.size() == 0){
+    checkIfGameFinished(){
+        console.log(this.opponentListId.length);
+        console.log(this.state.hasWon);
+         if (this.opponentListId.length == 0 || (this.opponentListId.length == 1 && this.state.hasWon == true)){
 
              if (localStorage.getItem('username') == this.host){
-                try {
-                    await api.put('lobbies/${this.id}/resets');
-                }catch(error){
-                    alert(`Something went wrong when trying to reset the lobby: \n${handleError(error)}`);
-                }
+
+                this.resetLobby();
+
                 setTimeout(this.props.history.push('/game/lobby'), 2000);
-              }else{
+
+
+             }else{
                 setTimeout(this.props.history.push('/game/waitingRoom'), 1000);
 
               }
         }
     }
 
-    async resetLobby()
+
+    async resetLobby() {
+        try {
+            await api.put(`lobbies/${this.id}/resets`);
+        }catch(error){
+            alert(`Something went wrong when trying to reset the lobby: \n${handleError(error)}`);
+        }
+    }
 
     getUsernameFromChat(text){
         var str = text.split('/');
