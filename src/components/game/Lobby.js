@@ -102,7 +102,7 @@ class Lobby extends React.Component {
           const message = "NPC/Welcome to the game"
           const requestBody2 = JSON.stringify({
               message: message,
-              lobbyId: localStorage.getItem('lobbyId'),
+              lobby: localStorage.getItem('lobbyId'),
               timestamp: time,
 
           });
