@@ -85,9 +85,10 @@ body {
 }
 .msg-box {
     display: flex;
-    background: #5b5e6c;
-    padding: 10px 10px 0 10px;
-    border-radius: 0 6px 6px 0;
+    background: #3661d8;
+    padding: 10px 10px 10px 10px;
+    margin: 10px;
+    border-radius: 10px 10px 10px 10px;
     max-width: 80%;
     width: auto;
     float: left;
@@ -121,12 +122,18 @@ body {
     margin-top: 8px;
 }
 .timestamp {
-    color: rgba(0,0,0,.38);
+    color: rgba(255, 255, 255, 0.38);
     font-size: 8pt;
     margin-bottom: 10px;
+    margin-left: 20px;
 }
 .username {
-    margin-right: 3px;
+    color: white;
+    margin-right: 6px;
+    margin-left: 6px;
+    position: absolute;
+    left: 22px;
+    bottom: 15px;
 }
 .posttime {
     margin-left: 3px;
