@@ -37,7 +37,10 @@ button {
   box-sizing: border-box;
 }
 
-
+mark {
+  color: red;
+  background-color: #F6F2E9;
+}
 
 h2 {
   background: linear-gradient(to right, #9E0000, #9E0000 , #08259D, #08259D , #158B02,#158B02, #E8C61C, #E8C61C);
