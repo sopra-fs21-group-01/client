@@ -129,6 +129,9 @@ class Game extends React.Component{
 
         this.handleInputChange = this.handleInputChange.bind(this)
         this.handleSubmit = this.handleSubmit.bind(this)
+
+        
+
     }
     
 
@@ -138,7 +141,6 @@ class Game extends React.Component{
         try {
             const response = await api.get(`lobbies/${this.id}`);
             // get opponents
-
 
             // get player's hand if he has not won yet
             if (!this.state.hasWon){
@@ -561,7 +563,7 @@ submit(card){{
           </TitelContainer>
 
           <TitelContainer2>
-              <h1>It's {this.currentplayerUN}'s turn!</h1>
+              <h1>It's <mark>{this.currentplayerUN}</mark>'s turn!</h1>
           </TitelContainer2>
 
           <div style={{display: 'flex', position: 'relative', top: '-162px', left: '-30%'}}>
