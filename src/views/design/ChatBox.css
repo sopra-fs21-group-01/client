@@ -21,7 +21,7 @@ body {
     border-radius: 2px;
 }
 .chatbox {
-    width: 500px;
+    width: 355px;
     height: 400px;
     max-height: 400px;
     display: flex;

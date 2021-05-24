@@ -2,7 +2,6 @@ import React from 'react';
 import styled from 'styled-components';
 import {BaseContainer} from '../../helpers/layout';
 import {api, handleError} from '../../helpers/api';
-import {Button} from '../../views/design/Button';
 import {Button4} from '../../views/design/Button4';
 import {ReturnCircle} from '../../views/design/ReturnCircle';
 import {UnoButton} from '../../views/design/UnoButton';
@@ -11,15 +10,13 @@ import '../../views/design/ChatBox.css';
 import {withRouter} from 'react-router-dom';
 import {Spinner} from '../../views/design/Spinner';
 import UnoTable from '../../views/Images/UnoTable.png';
-import PlayerList from '../shared/models/PlayerList';
 import Hand from '../shared/models/Hand';
 import GameEntity from '../shared/models/GameEntity';
 import CurrentPlayer from '../shared/models/CurrentPlayer';
 import {confirmAlert} from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css'
-import ChatEntity from "../shared/models/ChatEntity";
 import 'emoji-mart/css/emoji-mart.css';
-import { Picker } from 'emoji-mart';
+import {Picker} from 'emoji-mart';
 
 const styles = {
 
@@ -129,6 +126,9 @@ class Game extends React.Component{
         this.userid = localStorage.getItem("id");
         this.id = localStorage.getItem("lobbyId");
         this.theme = "standard";
+
+        this.handleInputChange = this.handleInputChange.bind(this)
+        this.handleSubmit = this.handleSubmit.bind(this)
     }
     
 
@@ -157,6 +157,7 @@ class Game extends React.Component{
             this.fetchData();
              this.getChatData();
             this.checkIfGameFinished();
+
 
         }
         catch (error) {
@@ -202,11 +203,13 @@ class Game extends React.Component{
             alert(`Something went wrong during the fetch of the Chat data: \n${handleError(error)}`);
         }
     }
-    async sendChatData(){
-        const username = this.getUsername();
-        const message = username + "/" + this.text;
+    async sendChatData(text){
+        // const username = this.getUsername();
+        const username = "dummy"
+        const message = username + "/" + text;
         const d = new Date();
         const time = d.toLocaleTimeString();
+
         try{
             const requestBody = JSON.stringify({
                 message: message,
@@ -215,6 +218,7 @@ class Game extends React.Component{
 
             });
             const response = await api.post("/chats", requestBody);
+            this.setState({text:null});
         }catch(error){
             alert(`Something went wrong during the post request of sendChatData: \n${handleError(error)}`);
         }
@@ -223,15 +227,12 @@ class Game extends React.Component{
         var i;
         for (i = 0; i < (this.opponentListId.length); i++) {
             if (this.opponentListId[i].slice(0, 1) == String(this.userid)) {
-                var str = this.opponentListId[i].split(',');
-                var username = str[1];
+                const str = this.opponentListId[i].split(',');
+                return str;
             }
         }
-        return username;
+
     }
-
-
-
 
 
     // Also checks if an opponent won
@@ -307,7 +308,6 @@ class Game extends React.Component{
 
         }
     }
-
 
     async playWildCard(card, wishedColor){
 
@@ -470,8 +470,6 @@ submit(card){{
 
 
     checkIfGameFinished(){
-        console.log(this.opponentListId.length);
-        console.log(this.state.hasWon);
          if (this.opponentListId.length == 0 || (this.opponentListId.length == 1 && this.state.hasWon == true)){
 
              if (localStorage.getItem('username') == this.host){
@@ -506,8 +504,13 @@ submit(card){{
         var str = text.split('/');
         return str[1];
     }
-    handleInputChange(key, value) {
-        this.setState({ [key]: value });
+    handleInputChange(e) {
+        this.setState({text: e.target.value });
+    }
+    handleSubmit(e){
+        e.preventDefault();
+        this.sendChatData(this.state.text);
+        e.target.reset();
     }
 
     addEmoji = e => {
@@ -679,23 +682,19 @@ submit(card){{
                             )}
                     </article>
                 </section>
-                <form className="chat-input">
+                <form className="chat-input" onSubmit={this.handleSubmit}>
                     <input
                       type="text"
                       value={this.state.text}
-                      placeholder="Type a message"
-                      onChange={event =>
-                    {this.handleInputChange('text', event.target.value)}}/>
+                      placeholder="Type a message and hit ENTER"
+                      onChange={this.handleInputChange} />
+                    <button>
+                        <svg style={{width: '24px', height: '24px'}} viewBox="0 0 24 24">
+                            <path fill="rgba(0,0,0,.38)"
+                                  d="M17,12L12,17V14H8V10H12V7L17,12M21,16.5C21,16.88 20.79,17.21 20.47,17.38L12.57,21.82C12.41,21.94 12.21,22 12,22C11.79,22 11.59,21.94 11.43,21.82L3.53,17.38C3.21,17.21 3,16.88 3,16.5V7.5C3,7.12 3.21,6.79 3.53,6.62L11.43,2.18C11.59,2.06 11.79,2 12,2C12.21,2 12.41,2.06 12.57,2.18L20.47,6.62C20.79,6.79 21,7.12 21,7.5V16.5M12,4.15L5,8.09V15.91L12,19.85L19,15.91V8.09L12,4.15Z"/>
+                        </svg>
+                    </button>
 
-                        <button
-                        onClick={() =>{
-                            this.sendChatData.bind(this);
-                            }}>
-                            <svg style={{width: '24px', height: '24px'}} viewBox="0 0 24 24">
-                                <path fill="rgba(0,0,0,.38)"
-                                      d="M17,12L12,17V14H8V10H12V7L17,12M21,16.5C21,16.88 20.79,17.21 20.47,17.38L12.57,21.82C12.41,21.94 12.21,22 12,22C11.79,22 11.59,21.94 11.43,21.82L3.53,17.38C3.21,17.21 3,16.88 3,16.5V7.5C3,7.12 3.21,6.79 3.53,6.62L11.43,2.18C11.59,2.06 11.79,2 12,2C12.21,2 12.41,2.06 12.57,2.18L20.47,6.62C20.79,6.79 21,7.12 21,7.5V16.5M12,4.15L5,8.09V15.91L12,19.85L19,15.91V8.09L12,4.15Z"/>
-                            </svg>
-                        </button>
 
                 </form>
             </section>
