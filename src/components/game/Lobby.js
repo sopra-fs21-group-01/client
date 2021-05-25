@@ -44,7 +44,8 @@ class Lobby extends React.Component {
         this.state = {
             id: localStorage.getItem('lobbyId'),
             host: localStorage.getItem('username'),
-            playerList:null
+            playerList:null,
+            initialCards: null
         };
     }
 
@@ -93,6 +94,7 @@ class Lobby extends React.Component {
        const requestBody = JSON.stringify({
               id: localStorage.getItem('lobbyId'),
               host: localStorage.getItem('username'),
+              initialCards: this.initialCards,
                });
 
       const lobbyId = localStorage.getItem('lobbyId');
