@@ -123,7 +123,8 @@ class Game extends React.Component{
             showEmojis: false,
             errors: [],
             hasWon: false,
-            username:null
+            username:null,
+            gameIsEmpty: false
         };
         this.userid = localStorage.getItem("id");
         this.id = localStorage.getItem("lobbyId");
@@ -162,6 +163,7 @@ class Game extends React.Component{
             this.getChatData();
             this.checkIfGameFinished();
             this.getUsername();
+            this.checkIfGameEmpty();
 
 
         }
@@ -402,7 +404,8 @@ class Game extends React.Component{
         //alert("Congratulations, you won!");
          this.setState({hasWon: true});
          this.BotMessage("won");
-        /**  const requestBody = JSON.stringify({
+
+         const requestBody = JSON.stringify({
           playerId: this.userid,
           });
            try{
@@ -411,7 +414,7 @@ class Game extends React.Component{
           }catch(error){
           alert(`Something went wrong during the fetch of the Chat data: \n${handleError(error)}`);
           }
-          */
+
 
 
              // set the isInGame boolean of the Lobby to FALSE!
@@ -488,10 +491,41 @@ class Game extends React.Component{
       }
     }
 
-    returnToMain() {
-      this.props.history.push('/game/mainmenu');
+
+
+    checkIfGameEmpty(){
+        if(this.opponentListId.length == 0 || this.host == "NOHOST"){
+
+            if (this.opponentListId.length == 0){
+                this.leaveGame();
+                alert("Empty Game!");
+
+            } else {
+                this.leaveGame();
+                alert("Host left the game!")
+            }
+
+        }
     }
 
+    async leaveGame() {
+
+        this.props.history.push('/game/mainmenu');
+        const requestBody = JSON.stringify({
+            playerId: this.userid,
+        });
+        try{
+            const response = await api.put("game/"+this.id+"/leave", requestBody);
+
+        }catch(error){
+            alert(`Something went wrong during the fetch of the LeaveGame data: \n${handleError(error)}`);
+        }
+        if (this.opponentListId.length == 0 || (this.opponentListId.length == 0 && this.host == "NOHOST")){
+            console.log("inside lif statemenrt");
+
+            this.deleteGame();
+        }
+    }
 
 
     checkIfGameFinished(){
@@ -510,6 +544,8 @@ class Game extends React.Component{
               }
         }
     }
+
+
 
 
     async resetLobby() {
@@ -592,7 +628,7 @@ class Game extends React.Component{
           <div style={{display: 'flex', position: 'relative', top: '-162px', left: '-30%'}}>
           <ReturnCircle  
             width="10%" 
-            onClick={() => {this.returnToMain()}}
+            onClick={() => {this.leaveGame()}}
           >
             Leave
           </ReturnCircle>
