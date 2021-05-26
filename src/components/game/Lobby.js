@@ -45,7 +45,8 @@ class Lobby extends React.Component {
             id: localStorage.getItem('lobbyId'),
             host: localStorage.getItem('username'),
             playerList:null,
-            initialCards: null
+            initialCards: null,
+            disabled: false
         };
     }
 
@@ -54,26 +55,43 @@ class Lobby extends React.Component {
       }
 
     async checkStatus(){
-    try {
-       const id = localStorage.getItem("lobbyId")
+        try {
+            const id = localStorage.getItem("lobbyId")
             const response = await api.get('/lobbies/'+id);
             const opponentList = new PlayerList(response.data);
             this.setState({playerList: (opponentList.playerList)});
             console.log(this.state.playerList);
-            if (response.data.inGame == true)
-            {
-            this.props.history.push('/game/running')
+            if (response.data.inGame == true) {
+                this.props.history.push('/game/running')
             }
-    }
+            this.checkPlayerListSize();
+            console.log(this.state.initialCards)
+        }
             catch (error) {
                   alert(`Something went wrong when asking if game is started: \n${handleError(error)}`);
                 }
         }
-  componentWillUnmount(){
-  clearInterval(this.updateInterval)
-  }
+    componentWillUnmount(){
+    clearInterval(this.updateInterval)
+    }
 
+    checkPlayerListSize(){
+        if(this.state.playerList.length > 1){
+            this.setState({disabled: true});
+        }
 
+    }
+
+    setCardNumber(number) {
+        if(number != null && number === 2) {
+            this.setState({initialCards: number});
+        }else if(number != null && number === 99){
+            let min = Math.ceil(2);
+            let max = Math.floor(10)
+            number = Math.floor(Math.random()* (max - min + 1) + min) ;
+            this.setState({initialCards: number})
+        }
+    }
 
     async closeLobby() {
     try {
@@ -115,6 +133,7 @@ class Lobby extends React.Component {
       }
     }
 
+
     render() {
     return (
     <Container2>
@@ -123,21 +142,22 @@ class Lobby extends React.Component {
           <h2>Lobby</h2>
         </TitelContainer>
           <div>
-            {/* <Dropdown>
+              <Dropdown>
 
                 <Dropdown.Toggle variant="success" id="dropdown-basic">
                 Game Mode
                 </Dropdown.Toggle>
 
                 <Dropdown.Menu>
-                <Dropdown.Item href="#/action-1">Standard</Dropdown.Item>
-                <Dropdown.Item href="#/action-2">Special 1</Dropdown.Item>
-                <Dropdown.Item href="#/action-3">Special 2</Dropdown.Item>
+                <Dropdown.Item href="#/action-1" onClick={() => this.setCardNumber(null)}>Standard</Dropdown.Item>
+                <Dropdown.Item href="#/action-2" onClick={() => this.setCardNumber(2)}>Speed</Dropdown.Item>
+                <Dropdown.Item href="#/action-3" onClick={() => this.setCardNumber(99)}>Party</Dropdown.Item>
                 </Dropdown.Menu>
-            </Dropdown> */}
+              </Dropdown>
 
             <ButtonContainer>
               <Button3
+              disabled={!this.state.disabled}
               width="100%"
               onClick={() => {
                 this.startGame();
@@ -170,6 +190,8 @@ class Lobby extends React.Component {
       </Container2>
     )
     }
+
+
 }
 
 export default withRouter(Lobby);

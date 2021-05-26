@@ -17,6 +17,7 @@ import {confirmAlert} from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css'
 import 'emoji-mart/css/emoji-mart.css';
 import {Picker} from 'emoji-mart';
+import User from "../shared/models/User";
 
 const styles = {
 
@@ -121,7 +122,8 @@ class Game extends React.Component{
             text:null,
             showEmojis: false,
             errors: [],
-            hasWon: false
+            hasWon: false,
+            username:null
         };
         this.userid = localStorage.getItem("id");
         this.id = localStorage.getItem("lobbyId");
@@ -157,8 +159,9 @@ class Game extends React.Component{
              }
 
             this.fetchData();
-             this.getChatData();
+            this.getChatData();
             this.checkIfGameFinished();
+            this.getUsername();
 
 
         }
@@ -180,6 +183,7 @@ class Game extends React.Component{
             this.currentcolor = game.currentColor;
             this.currentvalue = game.currentValue;
             this.opponentListId = game.opponentListHands;
+
 
             this.getOpponentHands();
   
@@ -206,9 +210,7 @@ class Game extends React.Component{
         }
     }
     async sendChatData(text){
-        // const username = this.getUsername();
-        const username = "dummy"
-        const message = username + "/" + text;
+        const message = this.username + "/" + text;
         const d = new Date();
         const time = d.toLocaleTimeString();
 
@@ -225,21 +227,41 @@ class Game extends React.Component{
             alert(`Something went wrong during the post request of sendChatData: \n${handleError(error)}`);
         }
     }
-    getUsername() {
-        var i;
-        for (i = 0; i < (this.opponentListId.length); i++) {
-            if (this.opponentListId[i].slice(0, 1) == String(this.userid)) {
-                const str = this.opponentListId[i].split(',');
-                return str;
-            }
+    async BotMessage(info){
+        let botmessage;
+        if(info === "uno"){
+            botmessage = "NPC /" +this.username + " says UNO";
+        }else if(info === "won"){
+            botmessage = "NPC /" +this.username + " has WON";
         }
+        const d = new Date();
+        const time = d.toLocaleTimeString();
+        try{
+            const requestBody = JSON.stringify({
+                message: botmessage,
+                lobby: this.id,
+                timestamp: time,
 
+            });
+            const response = await api.post("/chats", requestBody);
+            this.setState({text:null});
+        }catch(error){
+            alert(`Something went wrong during the post request of sendChatData: \n${handleError(error)}`);
+        }
+    }
+    async getUsername() {
+        try{
+            const response = await api.get("users/"+this.userid);
+            const user= new User(response.data);
+            this.username = user.username;
+        }catch(error){
+            alert(`Something went wrong during the fetch of the username: \n${handleError(error)}`);
+        }
     }
 
 
     // Also checks if an opponent won
     async getOpponentHands(){
-
         if(this.opponentListId){
             var j;
             for (j = 0; j< (this.opponentListId.length); j++) {
@@ -336,33 +358,33 @@ class Game extends React.Component{
 
 
     }
-submit(card){{
-            confirmAlert({
-                title: 'Wish a color!',
-                buttons: [
-                    {
-                        label: 'Blue',
-                        onClick: () => this.playWildCard(card,"Blue")
-                    },
-                    {
-                        label: 'Red',
-                        onClick: () => this.playWildCard(card,"Red")
-                    },
-                    {
-                        label: 'Yellow',
-                        onClick: () => this.playWildCard(card,"Yellow")
-                    },
-                    {
-                        label: 'Green',
-                        onClick: () => this.playWildCard(card,"Green")
-                    }
-                ]
-            })
+    submit(card) {
+    {
+        confirmAlert({
+            title: 'Wish a color!',
+            buttons: [
+                {
+                    label: 'Blue',
+                    onClick: () => this.playWildCard(card, "Blue")
+                },
+                {
+                    label: 'Red',
+                    onClick: () => this.playWildCard(card, "Red")
+                },
+                {
+                    label: 'Yellow',
+                    onClick: () => this.playWildCard(card, "Yellow")
+                },
+                {
+                    label: 'Green',
+                    onClick: () => this.playWildCard(card, "Green")
+                }
+            ]
+        })
 
-
-        };
 
     }
+}
 
     // Also checks if the player won
     async getHand(){
@@ -378,7 +400,8 @@ submit(card){{
       if (this.playerHand.length == 0) {
 
         //alert("Congratulations, you won!");
-         this.setState({hasWon: true})
+         this.setState({hasWon: true});
+         this.BotMessage("won");
         /**  const requestBody = JSON.stringify({
           playerId: this.userid,
           });
@@ -605,7 +628,7 @@ submit(card){{
                       width = "100%"
                       onClick={() =>{
                           this.sayUno();
-
+                          this.BotMessage("uno");
                       }}>
                       UNO
                   </UnoButton>

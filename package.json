@@ -34,6 +34,7 @@
     "not op_mini all"
   ],
   "devDependencies": {
-    "bootstrap-select-dropdown": "^0.14.6"
+    "bootstrap-select-dropdown": "^0.14.6",
+    "semantic-ui-react": "^2.0.3"
   }
 }
