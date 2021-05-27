@@ -46,7 +46,8 @@ class Lobby extends React.Component {
             host: localStorage.getItem('username'),
             playerList:null,
             initialCards: null,
-            disabled: false
+            disabled: false,
+            winnerList: null
         };
     }
 
@@ -60,7 +61,8 @@ class Lobby extends React.Component {
             const response = await api.get('/lobbies/'+id);
             const opponentList = new PlayerList(response.data);
             this.setState({playerList: (opponentList.playerList)});
-            console.log(this.state.playerList);
+            this.setState({winnerList: (opponentList.winnerList)});
+            console.log(this.state.winnerList);
             if (response.data.inGame == true) {
                 this.props.history.push('/game/running')
             }

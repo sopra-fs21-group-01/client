@@ -124,7 +124,8 @@ class Game extends React.Component{
             errors: [],
             hasWon: false,
             username:null,
-            gameIsEmpty: false
+            gameIsEmpty: false,
+            winner: null
         };
         this.userid = localStorage.getItem("id");
         this.id = localStorage.getItem("lobbyId");
@@ -185,6 +186,7 @@ class Game extends React.Component{
             this.currentcolor = game.currentColor;
             this.currentvalue = game.currentValue;
             this.opponentListId = game.opponentListHands;
+            this.winner = game.winner;
 
 
             this.getOpponentHands();
@@ -402,19 +404,20 @@ class Game extends React.Component{
       if (this.playerHand.length == 0) {
 
         //alert("Congratulations, you won!");
-         this.setState({hasWon: true});
          this.BotMessage("won");
 
-         const requestBody = JSON.stringify({
-          playerId: this.userid,
-          });
-           try{
-          const response = await api.put("game/"+this.id+"/wins", requestBody);
+         if (!this.hasWon){
+             const requestBody = JSON.stringify({
+                 playerId: this.userid,
+             });
+             try{
+                 const response = await api.put("game/"+this.id+"/wins", requestBody);
 
-          }catch(error){
-          alert(`Something went wrong during the fetch of the Chat data: \n${handleError(error)}`);
-          }
-
+             }catch(error){
+                 alert(`Something went wrong during the fetch of the Chat data: \n${handleError(error)}`);
+             }
+         }
+          this.setState({hasWon: true});
 
 
              // set the isInGame boolean of the Lobby to FALSE!
@@ -494,18 +497,25 @@ class Game extends React.Component{
 
 
     checkIfGameEmpty(){
-        if(this.opponentListId.length == 0 || this.host == "NOHOST"){
+        console.log(this.winner);
 
-            if (this.opponentListId.length == 0){
-                this.leaveGame();
-                alert("Empty Game!");
+        if (this.winner != null && this.opponentListId.length == 0) {
+        }
 
-            } else {
-                this.leaveGame();
-                alert("Host left the game!")
+         else if(this.opponentListId.length == 0 || this.host == "NOHOST"){
+
+                if (this.opponentListId.length == 0){
+                    this.leaveGame();
+                    alert("Empty Game or host left the game!");
+
+                } else {
+                    this.leaveGame();
+                    alert("Host left the game!")
+                }
+
             }
 
-        }
+
     }
 
     async leaveGame() {
@@ -522,8 +532,8 @@ class Game extends React.Component{
         }
         if (this.opponentListId.length == 0 || (this.opponentListId.length == 0 && this.host == "NOHOST")){
             console.log("inside lif statemenrt");
+this.deleteGame();
 
-            this.deleteGame();
         }
     }
 
@@ -537,12 +547,12 @@ class Game extends React.Component{
 
                 setTimeout(this.props.history.push('/game/lobby'), 2000);
 
-
              }else{
-                setTimeout(this.props.history.push('/game/waitingRoom'), 1000);
 
+                setTimeout(this.props.history.push('/game/waitingRoom'), 1000);
               }
-        }
+
+         }
     }
 
 
@@ -554,6 +564,7 @@ class Game extends React.Component{
         }catch(error){
             alert(`Something went wrong when trying to reset the lobby: \n${handleError(error)}`);
         }
+
     }
 
     getUsernameFromChat(text){
