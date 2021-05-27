@@ -81,8 +81,11 @@ class LobbyJoinSelection extends React.Component {
         }
   }
 
+    componentDidMount(){
+        this.updateInterval = setInterval(()=> (this.checkStatus()), 1000);
+    }
 
-  async componentDidMount() {
+  async checkStatus() {
     try {
       const response = await api.get('/lobbies');
 
@@ -97,6 +100,10 @@ class LobbyJoinSelection extends React.Component {
       alert(`Something went wrong while fetching the lobbies: \n${handleError(error)}`);
     }
   }
+
+    componentWillUnmount(){
+        clearInterval(this.updateInterval)
+    }
 
 // uses Lobby from Views, declars Lobbyname there if it should be shown
   render() {
