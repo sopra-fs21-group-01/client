@@ -5,6 +5,7 @@ import { api, handleError } from '../../helpers/api';
 import { Button } from '../../views/design/Button';
 import { Button2 } from '../../views/design/Button2';
 import { Button3 } from '../../views/design/Button3';
+import { Button5 } from '../../views/design/Button5';
 import { withRouter } from 'react-router-dom';
 import Dropdown from 'react-bootstrap/Dropdown';
 import PlayerList from '../shared/models/PlayerList';
@@ -47,9 +48,21 @@ class Lobby extends React.Component {
             playerList:null,
             initialCards: null,
             disabled: false,
-            winnerList: null
+            winnerList: null,
+            showMenu: false,
         };
+        this.showMenu = this.showMenu.bind(this);
+
     }
+
+    showMenu(event) {
+      event.preventDefault();
+      
+      this.setState({ showMenu: true }, () => {
+        document.addEventListener('click', this.closeMenu);
+      });
+    }
+  
 
     componentDidMount(){
       this.updateInterval = setInterval(()=> (this.checkStatus()), 1000);
@@ -85,7 +98,7 @@ class Lobby extends React.Component {
     }
 
     setCardNumber(number) {
-        if(number != null && number === 2) {
+        if (number != null && number === 2) {
             this.setState({initialCards: number});
         }else if(number != null && number === 99){
             let min = Math.ceil(2);
@@ -93,6 +106,7 @@ class Lobby extends React.Component {
             number = Math.floor(Math.random()* (max - min + 1) + min) ;
             this.setState({initialCards: number})
         }
+        this.setState({ showMenu: false })
     }
 
     async closeLobby() {
@@ -144,18 +158,26 @@ class Lobby extends React.Component {
           <h2>Lobby</h2>
         </TitelContainer>
           <div>
-              <Dropdown>
 
-                <Dropdown.Toggle variant="success" id="dropdown-basic">
-                Game Mode
-                </Dropdown.Toggle>
-
-                <Dropdown.Menu>
-                <Dropdown.Item href="#/action-1" onClick={() => this.setCardNumber(null)}>Standard</Dropdown.Item>
-                <Dropdown.Item href="#/action-2" onClick={() => this.setCardNumber(2)}>Speed</Dropdown.Item>
-                <Dropdown.Item href="#/action-3" onClick={() => this.setCardNumber(99)}>Party</Dropdown.Item>
-                </Dropdown.Menu>
-              </Dropdown>
+            <div>
+              <Button5 onClick={this.showMenu} width= "100%">
+                Game Modes
+              </Button5>
+              
+              {
+                this.state.showMenu
+                  ? (
+                    <div className="menu">
+                      <Button2 onClick={() => this.setCardNumber(null)}> Standard </Button2>
+                      <Button2 onClick={() => this.setCardNumber(2)}> Speed </Button2>
+                      <Button2 onClick={() => this.setCardNumber(99)}> Party </Button2>
+                    </div>
+                  )
+                  : (
+                    null
+                  )
+              }
+            </div>
 
             <ButtonContainer>
               <Button3
