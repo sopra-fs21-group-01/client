@@ -162,9 +162,10 @@ class Game extends React.Component{
 
             this.fetchData();
             this.getChatData();
+            this.checkIfGameEmpty();
             this.checkIfGameFinished();
             this.getUsername();
-            this.checkIfGameEmpty();
+
 
 
         }
@@ -401,7 +402,8 @@ class Game extends React.Component{
     }
       var i;
       var cardarray = [];
-      if (this.playerHand.length == 0) {
+      if (this.playerHand.length == 0 && !this.hasWon) {
+
 
         //alert("Congratulations, you won!");
          this.BotMessage("won");
@@ -416,8 +418,9 @@ class Game extends React.Component{
              }catch(error){
                  alert(`Something went wrong during the fetch of the Chat data: \n${handleError(error)}`);
              }
+             this.setState({hasWon: true});
          }
-          this.setState({hasWon: true});
+
 
 
              // set the isInGame boolean of the Lobby to FALSE!
@@ -497,9 +500,9 @@ class Game extends React.Component{
 
 
     checkIfGameEmpty(){
-        console.log(this.winner);
+        console.log(this.winner.length);
 
-        if (this.winner != null && this.opponentListId.length == 0) {
+        if (this.winner.length != 0 && this.opponentListId.length == 0) {
         }
 
          else if(this.opponentListId.length == 0 || this.host == "NOHOST"){
@@ -540,12 +543,15 @@ this.deleteGame();
 
     checkIfGameFinished(){
          if (this.opponentListId.length == 0 || (this.opponentListId.length == 1 && this.state.hasWon == true)){
-
+console.log(this.host);
              if (localStorage.getItem('username') == this.host){
+                 if (this.winner.length != 0){
+                     this.resetLobby();
 
-                this.resetLobby();
+                     setTimeout(this.props.history.push('/game/lobby'), 2000);
+                 }
 
-                setTimeout(this.props.history.push('/game/lobby'), 2000);
+
 
              }else{
 
