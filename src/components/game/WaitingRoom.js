@@ -63,7 +63,7 @@ class WaitingRoom extends React.Component {
             if (response.data == "") {
 
                 this.props.history.push('/game/mainmenu')
-                alert(`HOst closed the Lobby`);
+                alert(`Host closed the Lobby`);
 
             }
             if (response.data.inGame == true) {
