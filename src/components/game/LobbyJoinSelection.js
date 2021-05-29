@@ -3,17 +3,12 @@ import styled from 'styled-components';
 import { BaseContainer } from '../../helpers/layout';
 import { api, handleError } from '../../helpers/api';
 import { Button } from '../../views/design/Button';
-import { Button2 } from '../../views/design/Button2';
 import { Button3 } from '../../views/design/Button3';
 import { withRouter } from 'react-router-dom';
 import { Spinner } from '../../views/design/Spinner';
 import LobbyView from '../../views/LobbyView';
 import Lobby from '../shared/models/Lobby';
 
-const Container2 = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
 const Container = styled(BaseContainer)`
   color: black;
   text-align: center;
@@ -26,13 +21,6 @@ const TitelContainer = styled.div`
   font-weight: bold;
   font-size: 40px;
   margin-bottom: 10px;
-`;
-
-const TitelContainer2 = styled.div`
-  font-family: "Monospace", sans-serif;
-  color: black;
-  font-weight: bold;
-  font-size: 20px;
 `;
 
 const Lobbies = styled.ul`
@@ -66,9 +54,7 @@ class LobbyJoinSelection extends React.Component {
   async join(id) {
 
     try {
-
         // get the host name of the user that creates the lobby
-
         const requestBody = JSON.stringify({
           playerName: localStorage.getItem('username'),
           });
@@ -81,8 +67,11 @@ class LobbyJoinSelection extends React.Component {
         }
   }
 
+    componentDidMount(){
+        this.updateInterval = setInterval(()=> (this.checkStatus()), 1000);
+    }
 
-  async componentDidMount() {
+  async checkStatus() {
     try {
       const response = await api.get('/lobbies');
 
@@ -91,12 +80,14 @@ class LobbyJoinSelection extends React.Component {
       // Get the returned users and update the state.
       this.setState({ lobbies: response.data });
 
-      // See here to get more data.
-      console.log(response);
     } catch (error) {
       alert(`Something went wrong while fetching the lobbies: \n${handleError(error)}`);
     }
   }
+
+    componentWillUnmount(){
+        clearInterval(this.updateInterval)
+    }
 
 // uses Lobby from Views, declars Lobbyname there if it should be shown
   render() {

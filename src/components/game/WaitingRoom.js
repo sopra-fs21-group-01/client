@@ -1,13 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
-import { BaseContainer } from '../../helpers/layout';
-import { api, handleError } from '../../helpers/api';
-import { Button } from '../../views/design/Button';
-import { Button2 } from '../../views/design/Button2';
-import { Button3 } from '../../views/design/Button3';
-import { withRouter } from 'react-router-dom';
+import {BaseContainer} from '../../helpers/layout';
+import {api, handleError} from '../../helpers/api';
+import {Button} from '../../views/design/Button';
+import {Button2} from '../../views/design/Button2';
+import {Button3} from '../../views/design/Button3';
+import {withRouter} from 'react-router-dom';
 import Dropdown from 'react-bootstrap/Dropdown';
-import { Spinner } from '../../views/design/Spinner';
+import {Spinner} from '../../views/design/Spinner';
 import Lobby from '../shared/models/Lobby';
 import PlayerList from '../shared/models/PlayerList';
 
@@ -40,76 +40,99 @@ const ButtonContainer = styled.div`
 `;
 
 class WaitingRoom extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      gameID: null,
-      playerList:null
-    };
-  }
+    constructor() {
+        super();
+        this.state = {
+            gameID: null,
+            playerList: null,
+            winnerList: null,
+        };
+    }
 
-  componentDidMount(){
-       this.updateInterval = setInterval(()=> (this.checkStatus()), 1000);
-       }
+    componentDidMount() {
+        this.updateInterval = setInterval(() => (this.checkStatus()), 1000);
+    }
 
-     async checkStatus(){
-     try {
-        const id = localStorage.getItem("lobbyId")
-             const response = await api.get('/lobbies/'+id);
-             const opponentList = new PlayerList(response.data);
-             this.setState({playerList: (opponentList.playerList)});
-             console.log(this.state.playerList);
-             if (response.data.inGame == true)
-             {
-             this.props.history.push('/game/running')
-             }
-     }
-         catch (error) {
-                   alert(`Something went wrong when asking if game is started: \n${handleError(error)}`);
-                   this.props.history.push('/game/mainmenu')
-                 }
-         }
-   componentWillUnmount(){
-   clearInterval(this.updateInterval)
-   }
+    async checkStatus() {
+        try {
+            const id = localStorage.getItem("lobbyId")
+            const response = await api.get('/lobbies/' + id);
+            const opponentList = new PlayerList(response.data);
+            this.setState({playerList: (opponentList.playerList)});
+            this.setState({winnerList: (opponentList.winnerList)});
+            console.log(this.state.winnerList);
+            if (response.data == "") {
 
-   returnToMain() {
-    this.props.history.push('/game/mainmenu');
-  }
+                this.props.history.push('/game/mainmenu')
+                alert(`Host closed the Lobby`);
 
-  render() {
- 
-    return (
-    <Container2>
-      <Container>
-        <TitelContainer>
-          <h2>Waiting for Game to start</h2>
-          <Spinner />
-        </TitelContainer>
-        <ButtonContainer>
-        </ButtonContainer>
+            }
+            if (response.data.inGame == true) {
+                this.props.history.push('/game/running')
+            }
+        } catch (error) {
+            alert(`Something went wrong when asking if game is started: \n${handleError(error)}`);
+            this.props.history.push('/game/mainmenu')
+        }
+    }
 
-        <h1>Player(s):</h1>
+    componentWillUnmount() {
+        clearInterval(this.updateInterval)
+    }
 
-      
-        {!this.state.playerList ? (
-          <Spinner />
-          ) : (
-            (this.state.playerList).map(player => (<li key={player}>{player}</li>))
-        )}
-      
-        </Container>
-        <ButtonContainer>
-          <Button2 
-            width="20%" 
-            onClick={() => {this.returnToMain()}}
-          >
-            Return
-          </Button2>
-        </ButtonContainer>
-      </Container2>
-    )
-  }
+    returnToMain() {
+        this.props.history.push('/game/mainmenu');
+    }
+
+    render() {
+
+        return (
+            <Container2>
+                <Container>
+                    <TitelContainer>
+                        <h2>Waiting for Game to start</h2>
+                        <Spinner/>
+                    </TitelContainer>
+                    <ButtonContainer>
+                    </ButtonContainer>
+
+                    <h1>Player(s):</h1>
+
+
+                    {!this.state.playerList ? (
+                        <Spinner/>
+                    ) : (
+                        (this.state.playerList).map(player => (<li key={player}>{player}</li>))
+                    )}
+
+                
+                <ButtonContainer>
+                    <Button2
+                        width="20%"
+                        onClick={() => {
+                            this.returnToMain()
+                        }}
+                    >
+                        Return
+                    </Button2>
+                </ButtonContainer>
+
+                <div>
+                <h1>Rankings:</h1>
+                <div>
+                <ol>
+                    {!this.state.winnerList ? (
+                        <Spinner />
+                        ) : (
+                        (this.state.winnerList).map(player => (<li key={player}>{player}</li>))
+                    )}
+                </ol>
+                </div>
+                </div>
+                </Container>
+            </Container2>
+        )
+    }
 }
 
 export default withRouter(WaitingRoom);

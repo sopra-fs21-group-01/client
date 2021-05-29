@@ -36,19 +36,6 @@ const styles = {
     }
   };
 
-
-const Users = styled.ul`
-  list-style: none;
-  padding-left: 0;
-`;
-
-const PlayerContainer = styled.li`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-`;
-
 const Container2 = styled.div`
   display: flex;
   flex-direction: column;
@@ -78,20 +65,6 @@ const TitelContainer2 = styled.div`
   color: black;
   font-weight: bold;
   font-size: 20px;
-`;
-
-const ButtonContainer = styled.div`
-  display: flex;
-  position: relative;
-  cursor: pointer;
-  left: -50%;
-`;
-const CardContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  margin-top: 5px;
-  margin-bottom: 5px;
-  cursor: pointer;
 `;
 
 window.onunload = () => {
@@ -124,7 +97,8 @@ class Game extends React.Component{
             errors: [],
             hasWon: false,
             username:null,
-            gameIsEmpty: false
+            gameIsEmpty: false,
+            winner: null
         };
         this.userid = localStorage.getItem("id");
         this.id = localStorage.getItem("lobbyId");
@@ -161,9 +135,10 @@ class Game extends React.Component{
 
             this.fetchData();
             this.getChatData();
+            this.checkIfGameEmpty();
             this.checkIfGameFinished();
             this.getUsername();
-            this.checkIfGameEmpty();
+
 
 
         }
@@ -185,6 +160,7 @@ class Game extends React.Component{
             this.currentcolor = game.currentColor;
             this.currentvalue = game.currentValue;
             this.opponentListId = game.opponentListHands;
+            this.winner = game.winner;
 
 
             this.getOpponentHands();
@@ -280,23 +256,6 @@ class Game extends React.Component{
                 var nrOfCards = str[2];
                 var unoStatus = str[3]
                 opponentListNested.push([playerId,username,nrOfCards,unoStatus]);
-
-               /** if (nrOfCards == 0) {
-                  alert(username+ " finished the game!");
-
-                  // If its only two players left, than here it should either push to the lobby or waiting room
-
-                        if (localStorage.getItem('username') == this.host){
-                        try {
-                              await api.put(`lobbies/${this.id}/resets`);
-                         } catch(error){
-                         alert(`Something went wrong when trying to reset the lobby: \n${handleError(error)}`);
-                           }
-
-                        this.props.history.push('/game/lobby');}
-
-                       else { this.props.history.push('/game/waitingRoom');}
-                  } */
             }
             this.opponentListId =opponentListNested;
         }
@@ -357,8 +316,6 @@ class Game extends React.Component{
 
             }
 
-
-
     }
     submit(card) {
     {
@@ -383,8 +340,6 @@ class Game extends React.Component{
                 }
             ]
         })
-
-
     }
 }
 
@@ -399,24 +354,10 @@ class Game extends React.Component{
     }
       var i;
       var cardarray = [];
-      if (this.playerHand.length == 0) {
+      if (this.playerHand.length == 0 && !this.hasWon) {
 
-        //alert("Congratulations, you won!");
-        this.setState({hasWon: true});
-        this.BotMessage("won");
-        if(this.opponentListId.length > 1) {
-            const requestBody = JSON.stringify({
-                playerId: this.userid,
-            });
-            try {
 
-                await api.put("game/" + this.id + "/wins", requestBody);
-
-            } catch (error) {
-                alert(`Something went wrong during the fetch of the Chat data: \n${handleError(error)}`);
-            }
-        }
-
+       
 
              // set the isInGame boolean of the Lobby to FALSE!
 
@@ -427,6 +368,21 @@ class Game extends React.Component{
 
       // If there are only two players, don't do the PUT request, instead push both to the lobby and delete the game
 
+         this.BotMessage("won");
+
+         if (!this.hasWon){
+             const requestBody = JSON.stringify({
+                 playerId: this.userid,
+             });
+             try{
+                 const response = await api.put("game/"+this.id+"/wins", requestBody);
+
+
+             }catch(error){
+                 alert(`Something went wrong during the fetch of the Chat data: \n${handleError(error)}`);
+             }
+             this.setState({hasWon: true});
+         }
       }
       for (i = 0; i< (this.playerHand.length); i++) {
           var str = this.playerHand[i].split('/');
@@ -465,11 +421,8 @@ class Game extends React.Component{
         if (this.state.disabled) {
             return;
         }
-
             this.setState({disabled: true});
             const response = await api.put("game/" + this.id + "/drawCard");
-
-
 
     }
 
@@ -492,21 +445,24 @@ class Game extends React.Component{
       }
     }
 
-
-
     checkIfGameEmpty(){
-        if(this.opponentListId.length == 0 || this.host == "NOHOST"){
+        console.log(this.winner.length);
 
-            if (this.opponentListId.length == 0){
-                this.leaveGame();
-                alert("Empty Game!");
-
-            } else {
-                this.leaveGame();
-                alert("Host left the game!")
-            }
-
+        if (this.winner.length != 0 && this.opponentListId.length == 0) {
         }
+
+         else if(this.opponentListId.length == 0 || this.host == "NOHOST"){
+
+                if (this.opponentListId.length == 0){
+                    this.leaveGame();
+                    alert("Empty Game or host left the game!");
+
+                } else {
+                    this.leaveGame();
+                    alert("Host left the game!")
+                }
+
+            }
     }
 
     async leaveGame() {
@@ -523,27 +479,22 @@ class Game extends React.Component{
         }
         if (this.opponentListId.length == 0 || (this.opponentListId.length == 0 && this.host == "NOHOST")){
             console.log("inside lif statemenrt");
+this.deleteGame();
 
-            this.deleteGame();
         }
     }
 
-
     checkIfGameFinished(){
          if (this.opponentListId.length == 0 || (this.opponentListId.length == 1 && this.state.hasWon == true)){
-
              if (localStorage.getItem('username') == this.host){
-
-                this.resetLobby();
-
-                setTimeout(this.props.history.push('/game/lobby'), 2000);
-
-
+                 if (this.winner.length != 0){
+                     this.resetLobby();
+                     setTimeout(this.props.history.push('/game/lobby'), 2000);
+                 }
              }else{
                 setTimeout(this.props.history.push('/game/waitingRoom'), 1000);
-
               }
-        }
+         }
     }
 
 
@@ -560,7 +511,6 @@ class Game extends React.Component{
     getUsernameFromChat(text){
         var str = text.split('/');
         return str[0];
-
     }
     getMessageFromChat(text){
         var str = text.split('/');
@@ -614,7 +564,6 @@ class Game extends React.Component{
 
     render() {
       let errors = this.state.errors.map(err => <p>{err}</p>);
-
       return (
       <Container2>
         <Container>
@@ -627,49 +576,44 @@ class Game extends React.Component{
           </TitelContainer2>
 
           <div style={{display: 'flex', position: 'relative', top: '-162px', left: '-30%'}}>
-          <ReturnCircle  
-            width="10%" 
-            onClick={() => {this.leaveGame()}}
-          >
-            Leave
-          </ReturnCircle>
-
+            <ReturnCircle  
+                width="10%" 
+                onClick={() => {this.leaveGame()}}>
+                Leave
+            </ReturnCircle>
           </div>
   
           <div style={{ backgroundImage: `url(${UnoTable}) `, backgroundRepeat: 'no-repeat', margin: '90px auto' , width: "100%"}}>
 
-          <div style={{display: 'flex', position: 'relative', top: '160px', left: '42%'}}>
-    
-            {!this.currentcolor && !this.currentvalue ?(
-                <Spinner/>
-                ) : (
-                <div className="card">
-                    <img src={require(`../../views/Images/CardDesigns/${this.theme}/${this.currentcolor}/${this.currentvalue}.png`).default}/>
-                </div>
-            )
-            }
-          </div>   
-          <div style={{display: 'flex', position: 'relative', top: '180px', left: '72%', zIndex:'+1'}}>
-            <Button4
-                disabled={this.currentplayer != this.userid || this.state.disabled}
-                onClick={() =>{
-                    this.drawCard();
-                    this.setState({disabled: true});
+            <div style={{display: 'flex', position: 'relative', top: '160px', left: '42%'}}>
+                {!this.currentcolor && !this.currentvalue ?(
+                    <Spinner/>
+                    ) : (
+                    <div className="card">
+                        <img src={require(`../../views/Images/CardDesigns/${this.theme}/${this.currentcolor}/${this.currentvalue}.png`).default}/>
+                    </div>)}
+            </div>   
+            <div style={{display: 'flex', position: 'relative', top: '180px', left: '72%', zIndex:'+1'}}>
+                <Button4
+                    disabled={this.currentplayer != this.userid || this.state.disabled}
+                    onClick={() =>{
+                        this.drawCard();
+                        this.setState({disabled: true});
 
-                }}>
-            draw card
-            </Button4>
-            </div>
-              <div style={{display: 'flex', position: 'relative', top: '30px', left: '15%', zIndex:'+1'}}>
-                  <UnoButton
-                      width = "100%"
-                      onClick={() =>{
-                          this.sayUno();
-                          this.BotMessage("uno");
-                      }}>
-                      UNO
-                  </UnoButton>
-              </div>
+                    }}>
+                draw card
+                </Button4>
+                </div>
+                <div style={{display: 'flex', position: 'relative', top: '30px', left: '15%', zIndex:'+1'}}>
+                    <UnoButton
+                        width = "100%"
+                        onClick={() =>{
+                            this.sayUno();
+                            this.BotMessage("uno");
+                        }}>
+                        UNO
+                    </UnoButton>
+                </div>
               <div style={{display: 'flex', position: 'relative', top: '-100px', left: '70%'}}>
             <img src= {require(`../../views/Images/CardDesigns/${this.theme}/Back.png`).default}></img>
           </div>
