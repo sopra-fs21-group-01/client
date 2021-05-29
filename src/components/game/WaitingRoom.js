@@ -44,7 +44,8 @@ class WaitingRoom extends React.Component {
         super();
         this.state = {
             gameID: null,
-            playerList: null
+            playerList: null,
+            winnerList: null,
         };
     }
 
@@ -104,7 +105,7 @@ class WaitingRoom extends React.Component {
                         (this.state.playerList).map(player => (<li key={player}>{player}</li>))
                     )}
 
-                </Container>
+                
                 <ButtonContainer>
                     <Button2
                         width="20%"
@@ -115,6 +116,20 @@ class WaitingRoom extends React.Component {
                         Return
                     </Button2>
                 </ButtonContainer>
+
+                <div>
+                <h1>Rankings:</h1>
+                <div>
+                <ol>
+                    {!this.state.winnerList ? (
+                        <Spinner />
+                        ) : (
+                        (this.state.winnerList).map(player => (<li key={player}>{player}</li>))
+                    )}
+                </ol>
+                </div>
+                </div>
+                </Container>
             </Container2>
         )
     }

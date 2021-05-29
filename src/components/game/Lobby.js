@@ -209,6 +209,16 @@ class Lobby extends React.Component {
               Close Lobby
             </Button2>
           </div>
+          <div style={{position: 'relative', top: '10px'}}>
+          <h1>Rankings:</h1>
+          <ol>
+          {!this.state.winnerList ? (
+                <Spinner />
+                ) : (
+                  (this.state.winnerList).map(player => (<li key={player}>{player}</li>))
+              )}
+          </ol>
+          </div>
 
         </Container>
       </Container2>

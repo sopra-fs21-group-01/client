@@ -36,19 +36,6 @@ const styles = {
     }
   };
 
-
-const Users = styled.ul`
-  list-style: none;
-  padding-left: 0;
-`;
-
-const PlayerContainer = styled.li`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-`;
-
 const Container2 = styled.div`
   display: flex;
   flex-direction: column;
@@ -78,20 +65,6 @@ const TitelContainer2 = styled.div`
   color: black;
   font-weight: bold;
   font-size: 20px;
-`;
-
-const ButtonContainer = styled.div`
-  display: flex;
-  position: relative;
-  cursor: pointer;
-  left: -50%;
-`;
-const CardContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  margin-top: 5px;
-  margin-bottom: 5px;
-  cursor: pointer;
 `;
 
 window.onunload = () => {
