@@ -402,19 +402,20 @@ class Game extends React.Component{
       if (this.playerHand.length == 0) {
 
         //alert("Congratulations, you won!");
-         this.setState({hasWon: true});
-         this.BotMessage("won");
+        this.setState({hasWon: true});
+        this.BotMessage("won");
+        if(this.opponentListId.length > 1) {
+            const requestBody = JSON.stringify({
+                playerId: this.userid,
+            });
+            try {
 
-         const requestBody = JSON.stringify({
-          playerId: this.userid,
-          });
-           try{
-          const response = await api.put("game/"+this.id+"/wins", requestBody);
+                await api.put("game/" + this.id + "/wins", requestBody);
 
-          }catch(error){
-          alert(`Something went wrong during the fetch of the Chat data: \n${handleError(error)}`);
-          }
-
+            } catch (error) {
+                alert(`Something went wrong during the fetch of the Chat data: \n${handleError(error)}`);
+            }
+        }
 
 
              // set the isInGame boolean of the Lobby to FALSE!
