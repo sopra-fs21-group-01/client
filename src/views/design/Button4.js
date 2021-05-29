@@ -16,6 +16,6 @@ export const Button4 = styled.button`
   border-radius: 5px;
   cursor: ${props => (props.disabled ? "default" : "pointer")};
   opacity: ${props => (props.disabled ? 0.4 : 1)};
-  background: rgb(163, 163, 163, 0.8);
+  background: blue;
   transition: all 0.3s ease;
 `;

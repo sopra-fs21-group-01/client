@@ -10,6 +10,7 @@ import '../../views/design/ChatBox.css';
 import {withRouter} from 'react-router-dom';
 import {Spinner} from '../../views/design/Spinner';
 import UnoTable from '../../views/Images/UnoTable.png';
+import ToolTipIcon from '../../views/Images/tooltip.png';
 import Hand from '../shared/models/Hand';
 import GameEntity from '../shared/models/GameEntity';
 import CurrentPlayer from '../shared/models/CurrentPlayer';
@@ -18,6 +19,9 @@ import 'react-confirm-alert/src/react-confirm-alert.css'
 import 'emoji-mart/css/emoji-mart.css';
 import {Picker} from 'emoji-mart';
 import User from "../shared/models/User";
+
+
+
 
 const styles = {
 
@@ -98,7 +102,8 @@ class Game extends React.Component{
             hasWon: false,
             username:null,
             gameIsEmpty: false,
-            winner: null
+            winner: null,
+            externalAPI: false,
         };
         this.userid = localStorage.getItem("id");
         this.id = localStorage.getItem("lobbyId");
@@ -199,8 +204,14 @@ class Game extends React.Component{
                 timestamp: time,
 
             });
-            const response = await api.post("/chats", requestBody);
-            this.setState({text:null});
+            if (this.state.externalAPI == true) {
+                await api.post("/chat/funTranslation", requestBody);
+                this.state.externalAPI = false;
+                this.setState({text:null});
+            } else {
+                await api.post("/chats", requestBody);
+                this.setState({text:null});
+            }
         }catch(error){
             alert(`Something went wrong during the post request of sendChatData: \n${handleError(error)}`);
         }
@@ -548,6 +559,11 @@ this.deleteGame();
       }
     }
 
+    funTranslate() {
+        this.state.externalAPI = true;
+        //this.sendChatData(this.state.text);
+    }
+
     closeMenu = e => {
       console.log(this.emojiPicker);
       if (this.emojiPicker !== null && !this.emojiPicker.contains(e.target)) {
@@ -559,8 +575,6 @@ this.deleteGame();
         );
       }
     };
-
-
 
     render() {
       let errors = this.state.errors.map(err => <p>{err}</p>);
@@ -687,6 +701,7 @@ this.deleteGame();
                             )}
                     </article>
                 </section>
+               
                 <form className="chat-input" onSubmit={this.handleSubmit}>
                     <input
                       type="text"
@@ -724,6 +739,22 @@ this.deleteGame();
                     </p>
                     </div>
                 </div>
+
+                <div style={{display: 'flex', position: 'relative', top: '-42%', left: '123%'}}>
+                    <Button4
+                    disabled={this.state.externalAPI == true}
+                    onClick={() =>{
+                        this.funTranslate()}}>
+                        Fun Translate Text
+                    </Button4>
+                    <div style={{position: 'relative', right: '36%', top: "-50px"}}>
+                        
+                       <text>Translate your text into one of five random fun languages <br></br> by pressing the button and hitting enter</text> 
+                    </div>      
+                </div>
+            
+                    
+            
 
         </Container>
       </Container2>
