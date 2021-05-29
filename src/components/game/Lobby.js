@@ -2,12 +2,10 @@ import React from 'react';
 import styled from 'styled-components';
 import { BaseContainer } from '../../helpers/layout';
 import { api, handleError } from '../../helpers/api';
-import { Button } from '../../views/design/Button';
 import { Button2 } from '../../views/design/Button2';
 import { Button3 } from '../../views/design/Button3';
 import { Button5 } from '../../views/design/Button5';
 import { withRouter } from 'react-router-dom';
-import Dropdown from 'react-bootstrap/Dropdown';
 import PlayerList from '../shared/models/PlayerList';
 import { Spinner } from '../../views/design/Spinner';
 
@@ -75,12 +73,10 @@ class Lobby extends React.Component {
             const opponentList = new PlayerList(response.data);
             this.setState({playerList: (opponentList.playerList)});
             this.setState({winnerList: (opponentList.winnerList)});
-            console.log(this.state.winnerList);
             if (response.data.inGame == true) {
                 this.props.history.push('/game/running')
             }
             this.checkPlayerListSize();
-            console.log(this.state.initialCards)
         }
             catch (error) {
                   alert(`Something went wrong when asking if game is started: \n${handleError(error)}`);
@@ -111,16 +107,11 @@ class Lobby extends React.Component {
 
     async closeLobby() {
     try {
-    const lobbyId = localStorage.getItem('lobbyId');
-    await api.delete("/lobbies/"+lobbyId)}
-    catch (error) {
-            alert(`Something went wrong during lobby deleting: \n${handleError(error)}`);
-          }
+      const lobbyId = localStorage.getItem('lobbyId');
+      await api.delete("/lobbies/"+lobbyId)}
+      catch (error) {
+              alert(`Something went wrong during lobby deleting: \n${handleError(error)}`);}
     this.props.history.push('/game');
-    }
-
-    invite() {
-    // Create invitation code
     }
 
     async startGame(){
@@ -190,10 +181,8 @@ class Lobby extends React.Component {
               Start Game
               </Button3>
             </ButtonContainer>
-
             <h1>Player(s):</h1>
 
-         
               {!this.state.playerList ? (
                 <Spinner />
                 ) : (
@@ -224,7 +213,6 @@ class Lobby extends React.Component {
       </Container2>
     )
     }
-
 
 }
 

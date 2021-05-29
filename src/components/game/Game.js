@@ -256,23 +256,6 @@ class Game extends React.Component{
                 var nrOfCards = str[2];
                 var unoStatus = str[3]
                 opponentListNested.push([playerId,username,nrOfCards,unoStatus]);
-
-               /** if (nrOfCards == 0) {
-                  alert(username+ " finished the game!");
-
-                  // If its only two players left, than here it should either push to the lobby or waiting room
-
-                        if (localStorage.getItem('username') == this.host){
-                        try {
-                              await api.put(`lobbies/${this.id}/resets`);
-                         } catch(error){
-                         alert(`Something went wrong when trying to reset the lobby: \n${handleError(error)}`);
-                           }
-
-                        this.props.history.push('/game/lobby');}
-
-                       else { this.props.history.push('/game/waitingRoom');}
-                  } */
             }
             this.opponentListId =opponentListNested;
         }
@@ -333,8 +316,6 @@ class Game extends React.Component{
 
             }
 
-
-
     }
     submit(card) {
     {
@@ -359,8 +340,6 @@ class Game extends React.Component{
                 }
             ]
         })
-
-
     }
 }
 
@@ -377,8 +356,6 @@ class Game extends React.Component{
       var cardarray = [];
       if (this.playerHand.length == 0 && !this.hasWon) {
 
-
-        //alert("Congratulations, you won!");
          this.BotMessage("won");
 
          if (!this.hasWon){
@@ -393,18 +370,6 @@ class Game extends React.Component{
              }
              this.setState({hasWon: true});
          }
-
-
-
-             // set the isInGame boolean of the Lobby to FALSE!
-
-
-
-      // implement here, that you are removed from the playerList in the Backend
-      // -> new PUT request, takes player ID and game ID
-
-      // If there are only two players, don't do the PUT request, instead push both to the lobby and delete the game
-
       }
       for (i = 0; i< (this.playerHand.length); i++) {
           var str = this.playerHand[i].split('/');
@@ -443,11 +408,8 @@ class Game extends React.Component{
         if (this.state.disabled) {
             return;
         }
-
             this.setState({disabled: true});
             const response = await api.put("game/" + this.id + "/drawCard");
-
-
 
     }
 
@@ -470,8 +432,6 @@ class Game extends React.Component{
       }
     }
 
-
-
     checkIfGameEmpty(){
         console.log(this.winner.length);
 
@@ -490,8 +450,6 @@ class Game extends React.Component{
                 }
 
             }
-
-
     }
 
     async leaveGame() {
@@ -513,24 +471,16 @@ this.deleteGame();
         }
     }
 
-
     checkIfGameFinished(){
          if (this.opponentListId.length == 0 || (this.opponentListId.length == 1 && this.state.hasWon == true)){
-console.log(this.host);
              if (localStorage.getItem('username') == this.host){
                  if (this.winner.length != 0){
                      this.resetLobby();
-
                      setTimeout(this.props.history.push('/game/lobby'), 2000);
                  }
-
-
-
              }else{
-
                 setTimeout(this.props.history.push('/game/waitingRoom'), 1000);
               }
-
          }
     }
 
@@ -543,13 +493,11 @@ console.log(this.host);
         }catch(error){
             alert(`Something went wrong when trying to reset the lobby: \n${handleError(error)}`);
         }
-
     }
 
     getUsernameFromChat(text){
         var str = text.split('/');
         return str[0];
-
     }
     getMessageFromChat(text){
         var str = text.split('/');
@@ -603,7 +551,6 @@ console.log(this.host);
 
     render() {
       let errors = this.state.errors.map(err => <p>{err}</p>);
-
       return (
       <Container2>
         <Container>
@@ -616,49 +563,44 @@ console.log(this.host);
           </TitelContainer2>
 
           <div style={{display: 'flex', position: 'relative', top: '-162px', left: '-30%'}}>
-          <ReturnCircle  
-            width="10%" 
-            onClick={() => {this.leaveGame()}}
-          >
-            Leave
-          </ReturnCircle>
-
+            <ReturnCircle  
+                width="10%" 
+                onClick={() => {this.leaveGame()}}>
+                Leave
+            </ReturnCircle>
           </div>
   
           <div style={{ backgroundImage: `url(${UnoTable}) `, backgroundRepeat: 'no-repeat', margin: '90px auto' , width: "100%"}}>
 
-          <div style={{display: 'flex', position: 'relative', top: '160px', left: '42%'}}>
-    
-            {!this.currentcolor && !this.currentvalue ?(
-                <Spinner/>
-                ) : (
-                <div className="card">
-                    <img src={require(`../../views/Images/CardDesigns/${this.theme}/${this.currentcolor}/${this.currentvalue}.png`).default}/>
-                </div>
-            )
-            }
-          </div>   
-          <div style={{display: 'flex', position: 'relative', top: '180px', left: '72%', zIndex:'+1'}}>
-            <Button4
-                disabled={this.currentplayer != this.userid || this.state.disabled}
-                onClick={() =>{
-                    this.drawCard();
-                    this.setState({disabled: true});
+            <div style={{display: 'flex', position: 'relative', top: '160px', left: '42%'}}>
+                {!this.currentcolor && !this.currentvalue ?(
+                    <Spinner/>
+                    ) : (
+                    <div className="card">
+                        <img src={require(`../../views/Images/CardDesigns/${this.theme}/${this.currentcolor}/${this.currentvalue}.png`).default}/>
+                    </div>)}
+            </div>   
+            <div style={{display: 'flex', position: 'relative', top: '180px', left: '72%', zIndex:'+1'}}>
+                <Button4
+                    disabled={this.currentplayer != this.userid || this.state.disabled}
+                    onClick={() =>{
+                        this.drawCard();
+                        this.setState({disabled: true});
 
-                }}>
-            draw card
-            </Button4>
-            </div>
-              <div style={{display: 'flex', position: 'relative', top: '30px', left: '15%', zIndex:'+1'}}>
-                  <UnoButton
-                      width = "100%"
-                      onClick={() =>{
-                          this.sayUno();
-                          this.BotMessage("uno");
-                      }}>
-                      UNO
-                  </UnoButton>
-              </div>
+                    }}>
+                draw card
+                </Button4>
+                </div>
+                <div style={{display: 'flex', position: 'relative', top: '30px', left: '15%', zIndex:'+1'}}>
+                    <UnoButton
+                        width = "100%"
+                        onClick={() =>{
+                            this.sayUno();
+                            this.BotMessage("uno");
+                        }}>
+                        UNO
+                    </UnoButton>
+                </div>
               <div style={{display: 'flex', position: 'relative', top: '-100px', left: '70%'}}>
             <img src= {require(`../../views/Images/CardDesigns/${this.theme}/Back.png`).default}></img>
           </div>

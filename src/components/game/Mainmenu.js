@@ -53,11 +53,7 @@ class Mainmenu extends React.Component {
     
       const response = await api.put('/logout', requestBody);
       // Logout successfully worked --> navigate to the route /login in the AppRouter and remove token
-
       localStorage.removeItem('token');
-      
-      console.log(this.props) // TODO für was sind diese beiden console.log?
-      console.log(this.props.history)
       
       this.props.history.push('/login');
     } catch (error) {
@@ -79,9 +75,7 @@ class Mainmenu extends React.Component {
   async create() {
 
     try {
-
         // get the host name of the user that creates the lobby
-
         const requestBody = JSON.stringify({
           host: localStorage.getItem('username'),
           });
@@ -154,7 +148,6 @@ class Mainmenu extends React.Component {
               Logout
             </Button2>
           </div>
-        
       </Container>
     )
   }
