@@ -474,13 +474,17 @@ this.deleteGameAndLobby();
         }
     }
 
-    checkIfGameFinished(){
+    async hostFinishesGame(){
+        setTimeout(this.props.history.push('/game/lobby'), 2000);
+        setTimeout(this.deleteGame(), 2000);
+    }
+
+    async checkIfGameFinished(){
          if (this.opponentListId.length == 0 || (this.opponentListId.length == 1 && this.state.hasWon == true)){
              if (localStorage.getItem('username') == this.host){
                  if (this.winner.length != 0){
                      this.resetLobby();
-                     setTimeout(this.props.history.push('/game/lobby'), 2000);
-                     setTimeout(this.deleteGame(), 2000);                     
+                     this.hostFinishesGame();
                  }
              }else{
 
