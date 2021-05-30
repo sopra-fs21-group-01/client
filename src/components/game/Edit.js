@@ -127,6 +127,7 @@ class Edit extends React.Component {
                             placeholder={this.state.user.username}
                             onChange={e => {
                                 this.handleInputChange("username", e.target.value);
+                                localStorage.setItem("username", e.target.value);
                             }}
                         />
                         <Label>Password</Label>
