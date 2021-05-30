@@ -753,9 +753,6 @@ this.deleteGame();
                     </div>      
                 </div>
             
-                    
-            
-
         </Container>
       </Container2>
       );

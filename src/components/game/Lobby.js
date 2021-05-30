@@ -202,7 +202,7 @@ class Lobby extends React.Component {
             </Button2>
           </div>
           <div style={{position: 'relative', top: '10px'}}>
-          <h1>Rankings:</h1>
+          <h1>Rankings from last game:</h1>
           <ol>
           {!this.state.winnerList ? (
                 <Spinner />
