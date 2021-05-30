@@ -131,6 +131,7 @@ class Game extends React.Component{
              if (!this.state.hasWon){
                 this.getHand();
              }
+            this.getHand();
             this.checkIfGameFinished();
             this.fetchData();
             this.getChatData();
