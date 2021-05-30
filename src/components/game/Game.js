@@ -205,6 +205,7 @@ class Game extends React.Component{
         }
     }
     async BotMessage(info){
+        if (!this.state.hasWon){
         let botmessage;
         if(info === "uno"){
             botmessage = "NPC /" +this.username + " says UNO";
@@ -224,6 +225,7 @@ class Game extends React.Component{
         }catch(error){
             alert(`Something went wrong during the post request of sendChatData: \n${handleError(error)}`);
         }
+    }
     }
     async getUsername() {
         try{
