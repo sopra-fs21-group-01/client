@@ -106,7 +106,9 @@ The workflow of our applications is as follows:
 1. Register page: Here you can register yourself by choosing a username, email and password
 2. Login page: 
 ![Screenshot](1.PNG)
-![Screenshot](/src/views/Images/Screenshots/1.PNG)
+![Screenshot](client/src/views/Images/Screenshots/1.PNG)
+
+
 ## Roadmap
 Some features that could be integrated is to implement a music player which contains files either from a local storage or e.g. from spotify. Another one could be to create more complicated gamemodes as there exists many different rules that could be applied. Last most challenging feature to implement could be to integrate a voice chat, which may cause to extend the current architecture.
 
