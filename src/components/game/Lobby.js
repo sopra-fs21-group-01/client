@@ -94,15 +94,17 @@ class Lobby extends React.Component {
     }
 
     setCardNumber(number) {
-         if (number != null && number === 2) {
+        if (number != null && number == 2) {
             this.setState({initialCards: number});
-        }else if(number != null && number === 99){
+        }else if(number != null && number == 99){
+            console.log("inside elif");
             let min = Math.ceil(2);
             let max = Math.floor(10)
             number = Math.floor(Math.random()* (max - min + 1) + min) ;
-            this.setState({initialCards: number})
+            this.setState({initialCards: number});
         }
         this.setState({ showMenu: false })
+
     }
 
     async closeLobby() {
@@ -119,10 +121,11 @@ class Lobby extends React.Component {
        const requestBody = JSON.stringify({
               id: localStorage.getItem('lobbyId'),
               host: localStorage.getItem('username'),
-              initialCards: this.initialCards,
+              initialCards: this.state.initialCards,
                });
 
-      const lobbyId = localStorage.getItem('lobbyId');
+
+          const lobbyId = localStorage.getItem('lobbyId');
       await api.post("/game/"+lobbyId+"/kickOff", requestBody)
           const d = new Date();
           const time = d.toLocaleTimeString();
