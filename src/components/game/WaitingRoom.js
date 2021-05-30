@@ -118,7 +118,7 @@ class WaitingRoom extends React.Component {
                 </ButtonContainer>
 
                 <div>
-                <h1>Rankings:</h1>
+                <h1>Rankings from last game:</h1>
                 <div>
                 <ol>
                     {!this.state.winnerList ? (
