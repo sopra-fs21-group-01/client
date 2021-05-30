@@ -480,8 +480,7 @@ this.deleteGameAndLobby();
                  if (this.winner.length != 0){
                      this.resetLobby();
                      setTimeout(this.props.history.push('/game/lobby'), 2000);
-                     setTimeout(this.deleteGame(), 2000);
-                     
+                     setTimeout(this.deleteGame(), 2000);                     
                  }
              }else{
 
