@@ -60,7 +60,10 @@ class LobbyJoinSelection extends React.Component {
           });
         await api.put('/lobbies/'+id+'/joinedLobbies', requestBody);
 
-        this.props.history.push('/game/waitingRoom');
+        if (localStorage.getItem('username') == localStorage.getItem('lobbyHost')){
+        this.props.history.push('/game/lobby');
+        }
+        else{ this.props.history.push('/game/waitingRoom');}
 
     } catch (error) {
           alert(`Something went wrong during lobby joining: \n${handleError(error)}`);
@@ -110,6 +113,7 @@ class LobbyJoinSelection extends React.Component {
                      width="100%"
                      onClick={()=> {
                      localStorage.setItem('lobbyId', lobby.id);
+                     localStorage.setItem('lobbyHost', lobby.host);
                      this.join(lobby.id)}}>
                     Join Lobby
                    </Button3>

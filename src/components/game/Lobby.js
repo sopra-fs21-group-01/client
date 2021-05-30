@@ -94,7 +94,7 @@ class Lobby extends React.Component {
     }
 
     setCardNumber(number) {
-        if (number != null && number === 2) {
+         if (number != null && number === 2) {
             this.setState({initialCards: number});
         }else if(number != null && number === 99){
             let min = Math.ceil(2);
