@@ -7,6 +7,7 @@ import {withRouter} from 'react-router-dom';
 import {Spinner} from '../../views/design/Spinner';
 import PlayerList from '../shared/models/PlayerList';
 
+
 const Container2 = styled.div`
   display: flex;
   flex-direction: column;
@@ -110,7 +111,7 @@ class WaitingRoom extends React.Component {
                 <div>
                 <ol>
                     {!this.state.winnerList ? (
-                        <Spinner />
+                        <text>Play a game to receive a ranking!</text>
                         ) : (
                         (this.state.winnerList).map(player => (<li key={player}>{player}</li>))
                     )}

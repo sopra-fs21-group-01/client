@@ -266,7 +266,7 @@ class Game extends React.Component{
         }
     }
 
-     async deleteGame(){
+    async deleteGame(){
             try{
                 await api.delete("game/"+this.id+"/deletion");
                        }catch(error){

@@ -203,7 +203,7 @@ class Lobby extends React.Component {
           <h1>Rankings from last game:</h1>
           <ol>
           {!this.state.winnerList ? (
-                <Spinner />
+                <text>Play a game to receive a ranking!</text>
                 ) : (
                   (this.state.winnerList).map(player => (<li key={player}>{player}</li>))
               )}
