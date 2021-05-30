@@ -108,6 +108,7 @@ The workflow of our applications is as follows:
 3. Main page: Here you can either create a lobby or join one and if you want you can change your credentials. ![Screenshot](/src/views/Images/Screenshots/3.PNG)
 4. Create Lobby page: Here you can select the gamemode and start the game as soon as the players have joined the lobby ![Screenshot](/src/views/Images/Screenshots/5.PNG)
 5. Game page: This is the main game screen where you play the game, you can chat with each other and check everyone's game status  ![Screenshot](/src/views/Images/Screenshots/7.PNG)
+6. Lobby page: After finishing a game a scoreboard gets displayed and there is the option to restart a new game with a different gamemode ![Screenshot](/src/views/Images/Screenshots/10.PNG)
 
 
 
