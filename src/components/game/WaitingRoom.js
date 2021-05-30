@@ -2,13 +2,9 @@ import React from 'react';
 import styled from 'styled-components';
 import {BaseContainer} from '../../helpers/layout';
 import {api, handleError} from '../../helpers/api';
-import {Button} from '../../views/design/Button';
 import {Button2} from '../../views/design/Button2';
-import {Button3} from '../../views/design/Button3';
 import {withRouter} from 'react-router-dom';
-import Dropdown from 'react-bootstrap/Dropdown';
 import {Spinner} from '../../views/design/Spinner';
-import Lobby from '../shared/models/Lobby';
 import PlayerList from '../shared/models/PlayerList';
 
 const Container2 = styled.div`
@@ -95,28 +91,21 @@ class WaitingRoom extends React.Component {
                     </TitelContainer>
                     <ButtonContainer>
                     </ButtonContainer>
-
                     <h1>Player(s):</h1>
-
-
                     {!this.state.playerList ? (
                         <Spinner/>
                     ) : (
                         (this.state.playerList).map(player => (<li key={player}>{player}</li>))
                     )}
-
-                
                 <ButtonContainer>
                     <Button2
                         width="20%"
                         onClick={() => {
                             this.returnToMain()
-                        }}
-                    >
+                        }}>
                         Return
                     </Button2>
                 </ButtonContainer>
-
                 <div>
                 <h1>Rankings from last game:</h1>
                 <div>

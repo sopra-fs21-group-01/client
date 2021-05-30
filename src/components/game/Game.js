@@ -576,6 +576,10 @@ this.deleteGame();
       }
     };
 
+    tooltip() {
+        alert("Translate your text into one of five random fun languages by pressing the button and hitting enter")
+    }
+
     render() {
       let errors = this.state.errors.map(err => <p>{err}</p>);
       return (
@@ -740,16 +744,16 @@ this.deleteGame();
                     </div>
                 </div>
 
-                <div style={{display: 'flex', position: 'relative', top: '-42%', left: '123%'}}>
+                <div style={{display: 'flex', position: 'relative', top: '-46%', left: '123%'}}>
                     <Button4
                     disabled={this.state.externalAPI == true}
                     onClick={() =>{
                         this.funTranslate()}}>
                         Fun Translate Text
                     </Button4>
-                    <div style={{position: 'relative', right: '36%', top: "-50px"}}>
-                        
-                       <text>Translate your text into one of five random fun languages <br></br> by pressing the button and hitting enter</text> 
+                    <div style={{position: 'relative', left: '2%'}}>
+                    <img src={require(`../../views/Images/tooltip.png`).default}  onClick={() =>{this.tooltip()}} style={{height: '30px', width: '30px'}}/>
+                    
                     </div>      
                 </div>
             
