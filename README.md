@@ -102,6 +102,8 @@ See the section about [running tests](https://facebook.github.io/create-react-ap
 When you want to release you just have to push you code to github which is automatically connected with [HEROKU](https://sopra-fs21-group-01-client.herokuapp.com/register) where it gets deployed.
 
 ## Illustrations
+
+![Screenshot](https://github.com/sopra-fs21-group-01/client/tree/master/src/views/Images/Screenshots/1.PNG?raw=true)
 ## Roadmap
 Some features that could be integrated is to implement a music player which contains files either from a local storage or e.g. from spotify. Another one could be to create more complicated gamemodes as there exists many different rules that could be applied. Last most challenging feature to implement could be to integrate a voice chat, which may cause to extend the current architecture.
 
