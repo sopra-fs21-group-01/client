@@ -106,7 +106,8 @@ class Lobby extends React.Component {
     }
 
     async closeLobby() {
-    try {
+        localStorage.removeItem("winnerList");
+        try {
       const lobbyId = localStorage.getItem('lobbyId');
       await api.delete("/lobbies/"+lobbyId)}
       catch (error) {
@@ -193,7 +194,8 @@ class Lobby extends React.Component {
             <Button2
               width="100%"
               onClick={() => {
-                this.closeLobby();
+                  localStorage.removeItem("winnerList");
+                  this.closeLobby();
               }}
             >
               Close Lobby

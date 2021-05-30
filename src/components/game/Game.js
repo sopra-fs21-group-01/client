@@ -131,11 +131,10 @@ class Game extends React.Component{
              if (!this.state.hasWon){
                 this.getHand();
              }
-
+            this.checkIfGameFinished();
             this.fetchData();
             this.getChatData();
             this.checkIfGameEmpty();
-            this.checkIfGameFinished();
             this.getUsername();
 
         }
@@ -438,10 +437,11 @@ class Game extends React.Component{
     }
 
     checkIfGameEmpty(){
-        if (this.winner.length != 0 && this.opponentListId.length == 0) {
-        }
+        if(this.winner != undefined){
+            if (this.winner.length != 0 && this.opponentListId.length == 0) {
+            }
 
-         else if(this.opponentListId.length == 0 || this.host == "NOHOST"){
+            else if(this.opponentListId.length == 0 || this.host == "NOHOST"){
 
                 if (this.opponentListId.length == 0){
                     this.leaveGame();
@@ -453,6 +453,8 @@ class Game extends React.Component{
                 }
 
             }
+        }
+
     }
 
     async leaveGame() {
@@ -476,21 +478,23 @@ this.deleteGameAndLobby();
 
     async hostFinishesGame(){
         setTimeout(this.props.history.push('/game/lobby'), 2000);
-        setTimeout(this.deleteGame(), 2000);
     }
 
-    async checkIfGameFinished(){
-         if (this.opponentListId.length == 0 || (this.opponentListId.length == 1 && this.state.hasWon == true)){
-             if (localStorage.getItem('username') == this.host){
-                 if (this.winner.length != 0){
-                     this.resetLobby();
-                     this.hostFinishesGame();
-                 }
-             }else{
+    async checkIfGameFinished() {
+        if (this.winner != undefined) {
 
-                setTimeout(this.props.history.push('/game/waitingRoom'), 1000);
-              }
-         }
+            if (this.opponentListId.length == 0 || (this.opponentListId.length == 1 && this.state.hasWon == true)) {
+                if (localStorage.getItem('username') == this.host) {
+                    if (this.winner.length != 0) {
+                        this.resetLobby();
+                        this.hostFinishesGame();
+                    }
+                } else {
+
+                    setTimeout(this.props.history.push('/game/waitingRoom'), 1000);
+                }
+            }
+        }
     }
     async resetLobby() {
         try {
