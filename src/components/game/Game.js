@@ -273,13 +273,22 @@ class Game extends React.Component{
 
     }
 
-    async deleteGame(){
+    async deleteGameAndLobby(){
         try{
             await api.delete("game/"+this.id+"/deletion");
+            await api.delete("lobbies/"+this.id);
         }catch(error){
-            alert(`Something went wrong during the deletion of the game: \n${handleError(error)}`);
+            alert(`Something went wrong during the deletion of the game or lobby: \n${handleError(error)}`);
         }
     }
+
+     async deleteGame(){
+            try{
+                await api.delete("game/"+this.id+"/deletion");
+                       }catch(error){
+                alert(`Something went wrong during the deletion of the game: \n${handleError(error)}`);
+            }
+        }
     async playCard(card){
         if(this.currentplayer == this.userid) {
             var str = card.split('/');
@@ -490,7 +499,7 @@ class Game extends React.Component{
         }
         if (this.opponentListId.length == 0 || (this.opponentListId.length == 0 && this.host == "NOHOST")){
             console.log("inside lif statemenrt");
-this.deleteGame();
+this.deleteGameAndLobby();
 
         }
     }
@@ -501,6 +510,7 @@ this.deleteGame();
                  if (this.winner.length != 0){
                      this.resetLobby();
                      setTimeout(this.props.history.push('/game/lobby'), 2000);
+                     this.deleteGame();
                  }
              }else{
                 setTimeout(this.props.history.push('/game/waitingRoom'), 1000);
