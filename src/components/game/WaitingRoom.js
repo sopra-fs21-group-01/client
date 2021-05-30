@@ -52,13 +52,17 @@ class WaitingRoom extends React.Component {
 
     async checkStatus() {
         try {
+
+
+            console.log(this.state.playerList);
             const id = localStorage.getItem("lobbyId")
             const response = await api.get('/lobbies/' + id);
             const opponentList = new PlayerList(response.data);
             this.setState({playerList: (opponentList.playerList)});
             this.setState({winnerList: (opponentList.winnerList)});
-            if (response.data == "") {
 
+            if (response.data == "") {
+                localStorage.removeItem("winnerList");
                 this.props.history.push('/game/mainmenu')
                 alert(`Host closed the Lobby`);
 
@@ -77,6 +81,7 @@ class WaitingRoom extends React.Component {
     }
 
     returnToMain() {
+        localStorage.removeItem("winnerList");
         this.props.history.push('/game/mainmenu');
     }
 

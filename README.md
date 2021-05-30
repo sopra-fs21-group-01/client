@@ -102,6 +102,18 @@ See the section about [running tests](https://facebook.github.io/create-react-ap
 When you want to release you just have to push you code to github which is automatically connected with [HEROKU](https://sopra-fs21-group-01-client.herokuapp.com/register) where it gets deployed.
 
 ## Illustrations
+The workflow of our applications is as follows:
+1. Register page: Here you can register yourself by choosing a username, email and password ![Screenshot](/src/views/Images/Screenshots/1.PNG)
+2. Login page: After the registration you have to login in with your credentials
+3. Main page: Here you can either create a lobby or join one and if you want you can change your credentials. ![Screenshot](/src/views/Images/Screenshots/3.PNG)
+4. Create Lobby page: Here you can select the gamemode and start the game as soon as the players have joined the lobby ![Screenshot](/src/views/Images/Screenshots/5.PNG)
+5. Game page: This is the main game screen where you play the game, you can chat with each other and check everyone's game status  ![Screenshot](/src/views/Images/Screenshots/7.PNG)
+
+
+
+
+
+
 ## Roadmap
 Some features that could be integrated is to implement a music player which contains files either from a local storage or e.g. from spotify. Another one could be to create more complicated gamemodes as there exists many different rules that could be applied. Last most challenging feature to implement could be to integrate a voice chat, which may cause to extend the current architecture.
 
