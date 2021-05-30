@@ -20,9 +20,6 @@ import 'emoji-mart/css/emoji-mart.css';
 import {Picker} from 'emoji-mart';
 import User from "../shared/models/User";
 
-
-
-
 const styles = {
 
     getEmojiButton: {
@@ -110,18 +107,15 @@ class Game extends React.Component{
         this.theme = "standard";
 
         this.handleInputChange = this.handleInputChange.bind(this)
-        this.handleSubmit = this.handleSubmit.bind(this)
-
-        
+        this.handleSubmit = this.handleSubmit.bind(this)   
 
     }
     
-
       async componentDidMount(){
         this.updateInterval = setInterval(()=> (this.checkStatus()), 300);
 
         try {
-            const response = await api.get(`lobbies/${this.id}`);
+            await api.get(`lobbies/${this.id}`);
             // get opponents
 
             // get player's hand if he has not won yet
@@ -144,8 +138,6 @@ class Game extends React.Component{
             this.checkIfGameFinished();
             this.getUsername();
 
-
-
         }
         catch (error) {
             alert(`Something went wrong when fetching currentplayer: \n${handleError(error)}`);
@@ -154,7 +146,6 @@ class Game extends React.Component{
     componentWillUnmount(){
         clearInterval(this.updateInterval)
     }
-
     async fetchData(){
         try{
             const response = await api.get("game/"+this.id+"/kickOff");
@@ -166,10 +157,7 @@ class Game extends React.Component{
             this.currentvalue = game.currentValue;
             this.opponentListId = game.opponentListHands;
             this.winner = game.winner;
-
-
             this.getOpponentHands();
-  
             const response2 =  await api.get("users/"+this.currentplayer+"");
             const currentPlayer = new CurrentPlayer(response2.data);
             this.currentplayerUN = currentPlayer.username;
@@ -230,7 +218,6 @@ class Game extends React.Component{
                 message: botmessage,
                 lobby: this.id,
                 timestamp: time,
-
             });
             const response = await api.post("/chats", requestBody);
             this.setState({text:null});
@@ -247,7 +234,6 @@ class Game extends React.Component{
             alert(`Something went wrong during the fetch of the username: \n${handleError(error)}`);
         }
     }
-
 
     // Also checks if an opponent won
     async getOpponentHands(){
@@ -270,9 +256,7 @@ class Game extends React.Component{
             }
             this.opponentListId =opponentListNested;
         }
-
     }
-
     async deleteGameAndLobby(){
         try{
             await api.delete("game/"+this.id+"/deletion");
@@ -376,18 +360,6 @@ class Game extends React.Component{
       var cardarray = [];
       if (this.playerHand.length == 0 && !this.hasWon) {
 
-
-       
-
-             // set the isInGame boolean of the Lobby to FALSE!
-
-
-
-      // implement here, that you are removed from the playerList in the Backend
-      // -> new PUT request, takes player ID and game ID
-
-      // If there are only two players, don't do the PUT request, instead push both to the lobby and delete the game
-
          this.BotMessage("won");
 
          if (!this.hasWon){
@@ -452,7 +424,7 @@ class Game extends React.Component{
                 playerId: this.userid,
             });
 
-            const response = await api.put("game/" + this.id + "/sayUno", requestBody);
+            await api.put("game/" + this.id + "/sayUno", requestBody);
         } else{
             alert("Liar!");
         }
@@ -466,8 +438,6 @@ class Game extends React.Component{
     }
 
     checkIfGameEmpty(){
-        console.log(this.winner.length);
-
         if (this.winner.length != 0 && this.opponentListId.length == 0) {
         }
 
@@ -498,7 +468,7 @@ class Game extends React.Component{
             alert(`Something went wrong during the fetch of the LeaveGame data: \n${handleError(error)}`);
         }
         if (this.opponentListId.length == 0 || (this.opponentListId.length == 0 && this.host == "NOHOST")){
-            console.log("inside lif statemenrt");
+
 this.deleteGameAndLobby();
 
         }
@@ -510,17 +480,15 @@ this.deleteGameAndLobby();
                  if (this.winner.length != 0){
                      this.resetLobby();
                      setTimeout(this.props.history.push('/game/lobby'), 2000);
-                     this.deleteGame();
+                     setTimeout(this.deleteGame(), 2000);
+                     
                  }
              }else{
+
                 setTimeout(this.props.history.push('/game/waitingRoom'), 1000);
               }
          }
     }
-
-
-
-
     async resetLobby() {
         try {
             await api.put(`lobbies/${this.id}/resets`);
@@ -575,7 +543,6 @@ this.deleteGameAndLobby();
     }
 
     closeMenu = e => {
-      console.log(this.emojiPicker);
       if (this.emojiPicker !== null && !this.emojiPicker.contains(e.target)) {
         this.setState(
           {

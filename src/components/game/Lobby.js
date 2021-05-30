@@ -90,14 +90,12 @@ class Lobby extends React.Component {
         if(this.state.playerList.length > 1){
             this.setState({disabled: true});
         }
-
     }
 
     setCardNumber(number) {
         if (number != null && number == 2) {
             this.setState({initialCards: number});
         }else if(number != null && number == 99){
-            console.log("inside elif");
             let min = Math.ceil(2);
             let max = Math.floor(10)
             number = Math.floor(Math.random()* (max - min + 1) + min) ;

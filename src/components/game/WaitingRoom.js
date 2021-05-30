@@ -56,7 +56,6 @@ class WaitingRoom extends React.Component {
             const opponentList = new PlayerList(response.data);
             this.setState({playerList: (opponentList.playerList)});
             this.setState({winnerList: (opponentList.winnerList)});
-            console.log(this.state.winnerList);
             if (response.data == "") {
 
                 this.props.history.push('/game/mainmenu')

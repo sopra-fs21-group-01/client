@@ -15,21 +15,6 @@ const FormContainer = styled.div`
   justify-content: center;
 `;
 
-const Form = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  width: 40%;
-  height: 375px;
-  font-size: 16px;
-  font-weight: 300;
-  padding-left: 37px;
-  padding-right: 37px;
-  border-radius: 5px;
-  background: linear-gradient( rgb(2, 46, 101), rgb(27, 124, 186));
-  transition: opacity 0.5s ease, transform 0.5s ease;
-`;
-
 const InputField = styled.input`
   &::placeholder {
     color: rgba(255, 255, 255, 1.0);
@@ -110,7 +95,6 @@ class Edit extends React.Component {
     return() { 
         const path = this.props.location.pathname;
         var path_ending = path.match(/\d/g); 
-        console.log("%s", path_ending);
         this.props.history.push(`../profile/${path_ending}`); // pushes back to the specific user
     }
 
